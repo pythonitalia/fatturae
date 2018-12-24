@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+zeep = "*"
+pycountry = "*"
+django-model-utils = "*"
+
+[dev-packages]
+pytest = "*"
+pdbpp = "*"
+pytest-django = "*"
+"flake8-mypy" = "*"
+mypy = "*"
+
+[requires]
+python_version = "3.7"
+
+[scripts]
+start="python manage.py runserver"
+migrate="python manage.py migrate"
+makemigrations="python manage.py makemigrations"
+createsuperuser="python manage.py createsuperuser"
+test="pytest"
