@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
 from .constants import COUNTRIES, TAX_REGIMES, TRANSMISSIONS_FORMAT
-from .utils import invoice_to_xml
+from .xml import invoice_to_xml
 
 
 class Address(models.Model):

@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING
 
 from lxml import etree
 
 
+from .types import XMLDict
+from .utils import dict_to_xml
+
 if TYPE_CHECKING:
     from .models import Invoice
 
-# nested recursive types are not supported in MYPY
-XMLDict = Dict[str, Union[str, int, Any]]
 
 NAMESPACE_MAP = {
     "p": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2",
@@ -153,48 +154,7 @@ def _generate_body(invoice: Invoice) -> XMLDict:
     return body
 
 
-def _split_tags(tag_name: str, text: str) -> List[etree._Element]:
-    tags: List[etree._Element] = []
-
-    size = 200
-
-    chunks = [text[y - size : y] for y in range(size, len(text) + size, size)]
-
-    for value in chunks:
-        tag = etree.Element(tag_name)
-        tag.text = value
-        tags.append(tag)
-
-    return tags
-
-
-def _dict_to_xml(dict: XMLDict):
-    tags: List[etree._Element] = []
-
-    for key, value in dict.items():
-        if isinstance(value, Dict):
-            tag = etree.Element(key)
-
-            for subtag in _dict_to_xml(value):
-                tag.append(subtag)
-
-            tags.append(tag)
-        else:
-            if isinstance(value, int):
-                value = str(value)
-
-            for tag in _split_tags(key, value):
-                tags.append(tag)
-
-    return tags
-
-
 def invoice_to_xml(invoice: Invoice):
-
-    # xhtml = etree.Element(XHTML + "html", nsmap=NSMAP)  # lxml only!
-    # body = etree.SubElement(xhtml, XHTML + "body")
-    # body.text = "Hello World"
-
     root_tag = "{%s}FatturaElettronica" % NAMESPACE_MAP["p"]
     schema_location_key = "{%s}schemaLocation" % NAMESPACE_MAP["xsi"]
 
@@ -208,7 +168,7 @@ def invoice_to_xml(invoice: Invoice):
     header = _generate_header(invoice)
     body = _generate_body(invoice)
 
-    tags = [*_dict_to_xml(header), *_dict_to_xml(body)]
+    tags = [*dict_to_xml(header), *dict_to_xml(body)]
 
     for tag in tags:
         root.append(tag)
