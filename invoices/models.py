@@ -5,7 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from model_utils.models import TimeStampedModel
 
-from .constants import COUNTRIES, TAX_REGIMES, TRANSMISSIONS_FORMAT
+from .constants import (
+    COUNTRIES,
+    CURRENCIES,
+    INVOICE_TYPES,
+    TAX_REGIMES,
+    TRANSMISSION_FORMATS,
+)
 from .xml import invoice_to_xml
 
 
@@ -55,9 +61,18 @@ class Invoice(TimeStampedModel):
         Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
     )
     invoice_number = models.CharField(_("Invoice number"), max_length=100)
-    transmission_format = models.CharField(
-        _("Transmission format"), choices=TRANSMISSIONS_FORMAT, max_length=5
+    invoice_type = models.CharField(
+        _("Invoice type"), choices=INVOICE_TYPES, max_length=4
     )
+    invoice_currency = models.CharField(
+        _("Invoice currency"), choices=CURRENCIES, max_length=4
+    )
+    invoice_date = models.DateField(_("Invoice date"))
+    transmission_format = models.CharField(
+        _("Transmission format"), choices=TRANSMISSION_FORMATS, max_length=5
+    )
+
+    causal = models.TextField(_("Causal"), blank=True)
 
     recipient_tax_code = models.CharField(
         _("Tax code"), blank=True, max_length=16

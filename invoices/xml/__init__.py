@@ -85,14 +85,11 @@ def _generate_body(invoice: Invoice) -> XMLDict:
         "FatturaElettronicaBody": {
             "DatiGenerali": {
                 "DatiGeneraliDocumento": {
-                    "TipoDocumento": "TD01",
-                    "Divisa": "EUR",
-                    "Data": "2017-01-18",
-                    "Numero": 123,
-                    "Causale": (
-                        "LA FATTURA FA RIFERIMENTO AD UNA OPERAZIONE AAAA BBBBBBBBBBBBBBBBBB CCC DDDDDDDDDDDDDDD E FFFFFFFFFFFFFFFFFFFF GGGGGGGGGG HHHHHHH II LLLLLLLLLLLLLLLLL MMM NNNNN OO PPPPPPPPPPP QQQQ RRRR SSSSSSSSSSSSSS"
-                        "SEGUE DESCRIZIONE CAUSALE NEL CASO IN CUI NON SIANO STATI SUFFICIENTI 200 CARATTERI AAAAAAAAAAA BBBBBBBBBBBBBBBBB"
-                    ),
+                    "TipoDocumento": invoice.invoice_type,
+                    "Divisa": invoice.invoice_currency,
+                    "Data": invoice.invoice_date.strftime("%Y-%m-%d"),
+                    "Numero": invoice.invoice_number,
+                    "Causale": invoice.causal,
                 },
                 "DatiOrdineAcquisto": {
                     "RiferimentoNumeroLinea": 1,

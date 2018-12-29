@@ -1,9 +1,13 @@
 from model_utils import Choices
-from pycountry import countries
+from pycountry import countries, currencies
 
 
 COUNTRIES = Choices(
     *[(country.alpha_2, country.name) for country in countries]
+)
+
+CURRENCIES = Choices(
+    *[(currency.alpha_3, currency.name) for currency in currencies]
 )
 
 TAX_REGIMES = Choices(
@@ -44,7 +48,13 @@ TAX_REGIMES = Choices(
 )
 
 
-TRANSMISSIONS_FORMAT = Choices(
-    'FPA12',
-    'FPR12',
+TRANSMISSION_FORMATS = Choices("FPA12", "FPR12")
+
+INVOICE_TYPES = Choices(
+    ("TD01", "fattura"),
+    ("TD02", "acconto/anticipo su fattura"),
+    ("TD03", "acconto/anticipo su parcella"),
+    ("TD04", "nota di credito"),
+    ("TD05", "nota di debito"),
+    ("TD06", "parcella"),
 )

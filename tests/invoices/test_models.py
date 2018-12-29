@@ -1,8 +1,9 @@
+from datetime import date
+
 import pytest
 
+from invoices.models import Invoice
 from lxml import etree
-
-from invoices.models import Invoice, Sender, Address
 
 
 def _xml_to_string(xml):
@@ -24,6 +25,9 @@ def test_xml_header_generation(sender, client_address):
     invoice = Invoice(
         sender=sender,
         invoice_number="00001A",
+        invoice_type="TD01",
+        invoice_currency="EUR",
+        invoice_date=date(2019, 6, 16),
         transmission_format="FPR12",
         recipient_code="ABCDEFG",
         recipient_tax_code="AAABBB12B34Z123D",
@@ -92,3 +96,44 @@ def test_xml_header_generation(sender, client_address):
     assert ca_data.xpath("Comune")[0].text == "Avellino"
     assert ca_data.xpath("Provincia")[0].text == "AV"
     assert ca_data.xpath("Nazione")[0].text == "IT"
+
+
+@pytest.mark.django_db
+def test_xml_body_generation(sender, client_address):
+    invoice = Invoice(
+        sender=sender,
+        invoice_number="00001A",
+        invoice_type="TD01",
+        invoice_currency="EUR",
+        invoice_date=date(2019, 6, 16),
+        causal=("A" * 200 + "B" * 200),
+        transmission_format="FPR12",
+        recipient_code="ABCDEFG",
+        recipient_tax_code="AAABBB12B34Z123D",
+        recipient_first_name="Patrick",
+        recipient_last_name="A",
+        recipient_address=client_address,
+    )
+
+    xml = invoice.to_xml()
+
+    assert xml is not None
+
+    header = xml.xpath(
+        "/p:FatturaElettronica/FatturaElettronicaBody",
+        namespaces={
+            "p": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"
+        },
+    )[0]
+
+    general_data = header.xpath("DatiGenerali/DatiGeneraliDocumento")[0]
+
+    assert general_data.xpath("TipoDocumento")[0].text == "TD01"
+    assert general_data.xpath("Data")[0].text == "2019-06-16"
+    assert general_data.xpath("Divisa")[0].text == "EUR"
+    assert general_data.xpath("Numero")[0].text == "00001A"
+
+    # make sure the limit for the causal is respected (200 chars)
+    assert len(general_data.xpath("Causale")) == 2
+    assert general_data.xpath("Causale")[0].text == "A" * 200
+    assert general_data.xpath("Causale")[1].text == "B" * 200
