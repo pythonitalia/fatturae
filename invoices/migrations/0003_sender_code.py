@@ -5,15 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('invoices', '0002_invoice_sender'),
-    ]
+    dependencies = [("invoices", "0002_invoice_sender")]
 
     operations = [
         migrations.AddField(
-            model_name='sender',
-            name='code',
-            field=models.CharField(default='AAAAAAA', max_length=7, verbose_name='Sender code'),
+            model_name="sender",
+            name="code",
+            field=models.CharField(
+                default="AAAAAAA", max_length=7, verbose_name="Sender code"
+            ),
             preserve_default=False,
-        ),
+        )
     ]

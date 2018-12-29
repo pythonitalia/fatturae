@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('invoices', '0006_auto_20181229_2231'),
-    ]
+    dependencies = [("invoices", "0006_auto_20181229_2231")]
 
     operations = [
         migrations.AddField(
-            model_name='invoice',
-            name='causal',
-            field=models.TextField(blank=True, verbose_name='Causal'),
-        ),
+            model_name="invoice",
+            name="causal",
+            field=models.TextField(blank=True, verbose_name="Causal"),
+        )
     ]

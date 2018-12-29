@@ -5,18 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('invoices', '0003_sender_code'),
-    ]
+    dependencies = [("invoices", "0003_sender_code")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='address',
-            name='house_number',
-        ),
+        migrations.RemoveField(model_name="address", name="house_number"),
         migrations.AddField(
-            model_name='address',
-            name='postcode',
-            field=models.CharField(blank=True, max_length=20, verbose_name='Post Code'),
+            model_name="address",
+            name="postcode",
+            field=models.CharField(
+                blank=True, max_length=20, verbose_name="Post Code"
+            ),
         ),
     ]
