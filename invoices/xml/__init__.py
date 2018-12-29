@@ -160,7 +160,7 @@ def _generate_body(invoice: Invoice) -> XMLDict:
     return body
 
 
-def invoice_to_xml(invoice: Invoice):
+def invoice_to_xml(invoice: Invoice) -> etree._Element:
     root_tag = "{%s}FatturaElettronica" % NAMESPACE_MAP["p"]
     schema_location_key = "{%s}schemaLocation" % NAMESPACE_MAP["xsi"]
 
