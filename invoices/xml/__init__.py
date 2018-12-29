@@ -28,6 +28,7 @@ SCHEMA_LOCATION = (
 def _generate_header(invoice: Invoice) -> XMLDict:
     sender: Sender = invoice.sender
     address: Address = sender.address
+    client_address: Address = invoice.recipient_address
 
     header: XMLDict = {
         "FatturaElettronicaHeader": {
@@ -59,15 +60,18 @@ def _generate_header(invoice: Invoice) -> XMLDict:
             },
             "CessionarioCommittente": {
                 "DatiAnagrafici": {
-                    "CodiceFiscale": "09876543210",
-                    "Anagrafica": {"Denominazione": "AMMINISTRAZIONE BETA"},
+                    "CodiceFiscale": invoice.recipient_tax_code,
+                    "Anagrafica": {
+                        "Nome": invoice.recipient_first_name,
+                        "Cognome": invoice.recipient_last_name,
+                    },
                 },
                 "Sede": {
-                    "Indirizzo": "VIA TORINO 38-B",
-                    "CAP": "00145",
-                    "Comune": "ROMA",
-                    "Provincia": "RM",
-                    "Nazione": "IT",
+                    "Indirizzo": client_address.address,
+                    "CAP": client_address.postcode,
+                    "Comune": client_address.city,
+                    "Provincia": client_address.province,
+                    "Nazione": client_address.country_code,
                 },
             },
         }

@@ -40,11 +40,23 @@ def test_xml_header_generation():
         address=pi_address,
     )
 
+    client_address = Address.objects.create(
+        address="Via Roma 1",
+        city="Avellino",
+        postcode="83100",
+        province="AV",
+        country_code="IT",
+    )
+
     invoice = Invoice(
         sender=sender,
         invoice_number="00001A",
         transmission_format="FPR12",
         recipient_code="ABCDEFG",
+        recipient_tax_code="AAABBB12B34Z123D",
+        recipient_first_name="Patrick",
+        recipient_last_name="A",
+        recipient_address=client_address,
     )
 
     xml = invoice.to_xml()
@@ -70,6 +82,8 @@ def test_xml_header_generation():
     # TODO: might need to add this to the invoice, in order to be able to
     # TODO: use different party for invoices (if ever needed)
 
+    # Supplier data
+
     s_data = header.xpath("CedentePrestatore/DatiAnagrafici")[0]
 
     assert s_data.xpath("IdFiscaleIVA/IdPaese")[0].text == "IT"
@@ -89,3 +103,19 @@ def test_xml_header_generation():
     assert a_data.xpath("Comune")[0].text == "Campi Bisenzio"
     assert a_data.xpath("Provincia")[0].text == "FI"
     assert a_data.xpath("Nazione")[0].text == "IT"
+
+    # Client data
+
+    c_data = header.xpath("CessionarioCommittente/DatiAnagrafici")[0]
+
+    assert c_data.xpath("CodiceFiscale")[0].text == "AAABBB12B34Z123D"
+    assert c_data.xpath("Anagrafica/Nome")[0].text == "Patrick"
+    assert c_data.xpath("Anagrafica/Cognome")[0].text == "A"
+
+    ca_data = header.xpath("CessionarioCommittente/Sede")[0]
+
+    assert ca_data.xpath("Indirizzo")[0].text == "Via Roma 1"
+    assert ca_data.xpath("CAP")[0].text == "83100"
+    assert ca_data.xpath("Comune")[0].text == "Avellino"
+    assert ca_data.xpath("Provincia")[0].text == "AV"
+    assert ca_data.xpath("Nazione")[0].text == "IT"

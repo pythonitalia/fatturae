@@ -59,8 +59,20 @@ class Invoice(TimeStampedModel):
         _("Transmission format"), choices=TRANSMISSIONS_FORMAT, max_length=5
     )
 
+    recipient_tax_code = models.CharField(
+        _("Tax code"), blank=True, max_length=16
+    )
+    recipient_first_name = models.CharField(
+        _("Recipient first name"), blank=True, max_length=100
+    )
+    recipient_last_name = models.CharField(
+        _("Recipient last name"), blank=True, max_length=100
+    )
     recipient_code = models.CharField(_("Recipient code"), max_length=7)
     recipient_pec = models.EmailField(_("Recipient PEC"), blank=True)
+    recipient_address = models.ForeignKey(
+        Address, models.PROTECT, verbose_name=_("Recipient Address")
+    )
 
     def to_xml(self):
         return invoice_to_xml(self)
