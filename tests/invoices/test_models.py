@@ -20,34 +20,7 @@ def test_xml_generation(sample_invoice_xml):
 
 
 @pytest.mark.django_db
-def test_xml_header_generation():
-    pi_address = Address.objects.create(
-        address="Via Mugellese 1/A",
-        city="Campi Bisenzio",
-        postcode="50013",
-        province="FI",
-        country_code="IT",
-    )
-
-    sender = Sender.objects.create(
-        name="Python Italia APS",
-        code="PIABCDE",
-        country_code="IT",
-        contact_phone="+390123456789",
-        contact_email="info@python.it",
-        company_name="Python Italia APS",
-        tax_regime="RF01",
-        address=pi_address,
-    )
-
-    client_address = Address.objects.create(
-        address="Via Roma 1",
-        city="Avellino",
-        postcode="83100",
-        province="AV",
-        country_code="IT",
-    )
-
+def test_xml_header_generation(sender, client_address):
     invoice = Invoice(
         sender=sender,
         invoice_number="00001A",
