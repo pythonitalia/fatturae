@@ -11,9 +11,7 @@ from .xml import invoice_to_xml
 
 class Address(models.Model):
     address = models.CharField(_("Address"), max_length=200)
-    house_number = models.CharField(
-        _("House number"), max_length=20, blank=True
-    )
+    postcode = models.CharField(_("Post Code"), max_length=20, blank=True)
     city = models.CharField(_("City"), max_length=100, blank=True)
     province = models.CharField(_("Province"), max_length=100, blank=True)
     country_code = models.CharField(
@@ -36,6 +34,7 @@ class Sender(TimeStampedModel):
     contact_email = models.CharField(_("Contact Email"), max_length=200)
 
     fiscal_code = models.CharField(_("Fiscal Code"), max_length=16)
+    code = models.CharField(_("Sender code"), max_length=7)
 
     company_name = models.CharField(_("Company Name"), max_length=10)
 
@@ -52,6 +51,9 @@ class Sender(TimeStampedModel):
 
 
 class Invoice(TimeStampedModel):
+    sender = models.ForeignKey(
+        Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
+    )
     invoice_number = models.CharField(_("Invoice number"), max_length=100)
     transmission_format = models.CharField(
         _("Transmission format"), choices=TRANSMISSIONS_FORMAT, max_length=5

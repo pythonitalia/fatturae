@@ -9,7 +9,7 @@ from .types import XMLDict
 from .utils import dict_to_xml
 
 if TYPE_CHECKING:
-    from .models import Invoice
+    from invoices.models import Invoice, Sender, Address
 
 
 NAMESPACE_MAP = {
@@ -26,29 +26,35 @@ SCHEMA_LOCATION = (
 
 
 def _generate_header(invoice: Invoice) -> XMLDict:
+    sender: Sender = invoice.sender
+    address: Address = sender.address
+
     header: XMLDict = {
         "FatturaElettronicaHeader": {
             "DatiTrasmissione": {
-                "IdTrasmittente": {"IdPaese": "IT", "IdCodice": "01234567890"},
-                "ProgressivoInvio": "00001",
-                "FormatoTrasmissione": "FPR12",
-                "CodiceDestinatario": "AAAAAA",
+                "IdTrasmittente": {
+                    "IdPaese": sender.country_code,
+                    "IdCodice": sender.code,
+                },
+                "ProgressivoInvio": invoice.invoice_number,
+                "FormatoTrasmissione": invoice.transmission_format,
+                "CodiceDestinatario": invoice.recipient_code,
             },
             "CedentePrestatore": {
                 "DatiAnagrafici": {
                     "IdFiscaleIVA": {
-                        "IdPaese": "IT",
+                        "IdPaese": sender.country_code,
                         "IdCodice": "01234567890",
                     },
-                    "Anagrafica": {"Denominazione": "ALPHA SRL"},
-                    "RegimeFiscale": "RF19",
+                    "Anagrafica": {"Denominazione": sender.company_name},
+                    "RegimeFiscale": sender.tax_regime,
                 },
                 "Sede": {
-                    "Indirizzo": "VIALE ROMA 543",
-                    "CAP": "07100",
-                    "Comune": "SASSARI",
-                    "Provincia": "SS",
-                    "Nazione": "IT",
+                    "Indirizzo": address.address,
+                    "CAP": address.postcode,
+                    "Comune": address.city,
+                    "Provincia": address.province,
+                    "Nazione": address.country_code,
                 },
             },
             "CessionarioCommittente": {
