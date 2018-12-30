@@ -106,6 +106,24 @@ def test_xml_body_generation(sender, client_address):
         invoice_type="TD01",
         invoice_currency="EUR",
         invoice_date=date(2019, 6, 16),
+        invoice_summary=[
+            {
+                "row": 1,
+                "description": "item 1",
+                "quantity": "1",
+                "unit_price": "1",
+                "total_price": "1",
+                "vat_rate": "0",
+            },
+            {
+                "row": 2,
+                "description": "item 2",
+                "quantity": "2",
+                "unit_price": "2",
+                "total_price": "2",
+                "vat_rate": "0",
+            },
+        ],
         causal=("A" * 200 + "B" * 200),
         transmission_format="FPR12",
         recipient_code="ABCDEFG",
@@ -119,14 +137,14 @@ def test_xml_body_generation(sender, client_address):
 
     assert xml is not None
 
-    header = xml.xpath(
+    body = xml.xpath(
         "/p:FatturaElettronica/FatturaElettronicaBody",
         namespaces={
             "p": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"
         },
     )[0]
 
-    general_data = header.xpath("DatiGenerali/DatiGeneraliDocumento")[0]
+    general_data = body.xpath("DatiGenerali/DatiGeneraliDocumento")[0]
 
     assert general_data.xpath("TipoDocumento")[0].text == "TD01"
     assert general_data.xpath("Data")[0].text == "2019-06-16"
@@ -137,3 +155,26 @@ def test_xml_body_generation(sender, client_address):
     assert len(general_data.xpath("Causale")) == 2
     assert general_data.xpath("Causale")[0].text == "A" * 200
     assert general_data.xpath("Causale")[1].text == "B" * 200
+
+    # Invoice summary
+
+    summary = body.xpath("DatiBeniServizi")[0]
+
+    assert len(summary.xpath("DettaglioLinee")) == 2
+
+    first_item = summary.xpath("DettaglioLinee")[0]
+    second_item = summary.xpath("DettaglioLinee")[1]
+
+    assert first_item.xpath("NumeroLinea")[0].text == "1"
+    assert first_item.xpath("Descrizione")[0].text == "item 1"
+    assert first_item.xpath("Quantita")[0].text == "1"
+    assert first_item.xpath("PrezzoUnitario")[0].text == "1"
+    assert first_item.xpath("PrezzoTotale")[0].text == "1"
+    assert first_item.xpath("AliquotaIVA")[0].text == "0"
+
+    assert second_item.xpath("NumeroLinea")[0].text == "2"
+    assert second_item.xpath("Descrizione")[0].text == "item 2"
+    assert second_item.xpath("Quantita")[0].text == "2"
+    assert second_item.xpath("PrezzoUnitario")[0].text == "2"
+    assert second_item.xpath("PrezzoTotale")[0].text == "2"
+    assert second_item.xpath("AliquotaIVA")[0].text == "0"
