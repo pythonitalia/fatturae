@@ -70,6 +70,10 @@ class Invoice(TimeStampedModel):
         _("Invoice currency"), choices=CURRENCIES, max_length=4
     )
     invoice_date = models.DateField(_("Invoice date"))
+    invoice_tax_rate = models.CharField(_("Invoice tax rate"), max_length=5)
+    invoice_amount = models.CharField(_("Invoice amount"), max_length=10)
+    invoice_tax_amount = models.CharField(_("Invoice tax"), max_length=10)
+
     transmission_format = models.CharField(
         _("Transmission format"), choices=TRANSMISSION_FORMATS, max_length=5
     )

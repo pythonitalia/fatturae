@@ -106,10 +106,9 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                     for x in summary
                 ],
                 "DatiRiepilogo": {
-                    "AliquotaIVA": "22.00",
-                    "ImponibileImporto": "5.00",
-                    "Imposta": "1.10",
-                    "EsigibilitaIVA": "I",
+                    "AliquotaIVA": invoice.invoice_tax_rate,
+                    "ImponibileImporto": invoice.invoice_amount,
+                    "Imposta": invoice.invoice_tax_amount,
                 },
             },
             "DatiPagamento": {
