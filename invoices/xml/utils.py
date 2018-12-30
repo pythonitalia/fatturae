@@ -24,13 +24,17 @@ def dict_to_xml(dict: XMLDict):
     tags: List[etree._Element] = []
 
     for key, value in dict.items():
-        if isinstance(value, Dict):
-            tag = etree.Element(key)
+        if isinstance(value, (Dict, List)):
+            if not isinstance(value, List):
+                value = [value]
 
-            for subtag in dict_to_xml(value):
-                tag.append(subtag)
+            for item in value:
+                tag = etree.Element(key)
 
-            tags.append(tag)
+                for subtag in dict_to_xml(item):
+                    tag.append(subtag)
+
+                tags.append(tag)
         else:
             if isinstance(value, int):
                 value = str(value)

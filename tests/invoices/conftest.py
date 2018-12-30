@@ -1,10 +1,11 @@
 import os
+from typing import List
 
 import pytest
 
-from lxml import etree
-
 from invoices.models import Address, Sender
+from invoices.xml.types import ProductSummary
+from lxml import etree
 
 
 @pytest.fixture
@@ -58,3 +59,25 @@ def sender(supplier_address):
         tax_regime="RF01",
         address=supplier_address,
     )
+
+
+@pytest.fixture
+def sample_summary() -> List[ProductSummary]:
+    return [
+        {
+            "row": 1,
+            "description": "item 1",
+            "quantity": "1",
+            "unit_price": "1",
+            "total_price": "1",
+            "vat_rate": "0",
+        },
+        {
+            "row": 2,
+            "description": "item 2",
+            "quantity": "2",
+            "unit_price": "2",
+            "total_price": "2",
+            "vat_rate": "0",
+        },
+    ]

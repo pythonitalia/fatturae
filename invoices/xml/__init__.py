@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from lxml import etree
 
-
-from .types import XMLDict
+from .types import ProductSummary, XMLDict
 from .utils import dict_to_xml
 
 if TYPE_CHECKING:
@@ -81,6 +80,8 @@ def _generate_header(invoice: Invoice) -> XMLDict:
 
 
 def _generate_body(invoice: Invoice) -> XMLDict:
+    summary: List[ProductSummary] = invoice.invoice_summary
+
     body: XMLDict = {
         "FatturaElettronicaBody": {
             "DatiGenerali": {
@@ -90,56 +91,20 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                     "Data": invoice.invoice_date.strftime("%Y-%m-%d"),
                     "Numero": invoice.invoice_number,
                     "Causale": invoice.causal,
-                },
-                "DatiOrdineAcquisto": {
-                    "RiferimentoNumeroLinea": 1,
-                    "IdDocumento": 66685,
-                    "NumItem": 1,
-                    "CodiceCUP": "123abc",
-                    "CodiceCIG": "456def",
-                },
-                "DatiContratto": {
-                    "RiferimentoNumeroLinea": 1,
-                    "IdDocumento": 123,
-                    "Data": "2016-09-01",
-                    "NumItem": "5",
-                    "CodiceCUP": "123abc",
-                    "CodiceCIG": "456def",
-                },
-                "DatiConvenzione": {
-                    "RiferimentoNumeroLinea": 1,
-                    "IdDocumento": 456,
-                    "NumItem": "5",
-                    "CodiceCUP": "123abc",
-                    "CodiceCIG": "456def",
-                },
-                "DatiRicezione": {
-                    "RiferimentoNumeroLinea": 1,
-                    "IdDocumento": 789,
-                    "NumItem": "5",
-                    "CodiceCUP": "123abc",
-                    "CodiceCIG": "456def",
-                },
-                "DatiTrasporto": {
-                    "DatiAnagraficiVettore": {
-                        "IdFiscaleIVA": {
-                            "IdPaese": "IT",
-                            "IdCodice": "24681012141",
-                        },
-                        "Anagrafica": {"Denominazione": "Trasporto spa"},
-                    },
-                    "DataOraConsegna": "2017-01-10T16:46:12.000+02:00",
-                },
+                }
             },
             "DatiBeniServizi": {
-                "DettaglioLinee": {
-                    "NumeroLinea": 1,
-                    "Descrizione": "DESCRIZIONE DELLA FORNITURA",
-                    "Quantita": "5.00",
-                    "PrezzoUnitario": "1.00",
-                    "PrezzoTotale": "5.00",
-                    "AliquotaIVA": "22.00",
-                },
+                "DettaglioLinee": [
+                    {
+                        "NumeroLinea": x["row"],
+                        "Descrizione": x["description"],
+                        "Quantita": x["quantity"],
+                        "PrezzoUnitario": x["unit_price"],
+                        "PrezzoTotale": x["total_price"],
+                        "AliquotaIVA": x["vat_rate"],
+                    }
+                    for x in summary
+                ],
                 "DatiRiepilogo": {
                     "AliquotaIVA": "22.00",
                     "ImponibileImporto": "5.00",

@@ -8,6 +8,9 @@ django = "*"
 zeep = "*"
 pycountry = "*"
 django-model-utils = "*"
+jsonschema = "*"
+"psycopg2-binary" = "*"
+django-environ = "*"
 
 [dev-packages]
 pytest = "*"
@@ -15,6 +18,8 @@ pdbpp = "*"
 pytest-django = "*"
 "flake8-mypy" = "*"
 mypy = "*"
+pytest-env = "*"
+typing-extensions = "*"
 
 [requires]
 python_version = "3.7"

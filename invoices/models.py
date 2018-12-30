@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -12,6 +13,7 @@ from .constants import (
     TAX_REGIMES,
     TRANSMISSION_FORMATS,
 )
+from .utils import PRODUCT_SUMMARY_SCHEMA, JSONSchemaValidator
 from .xml import invoice_to_xml
 
 
@@ -42,7 +44,7 @@ class Sender(TimeStampedModel):
     fiscal_code = models.CharField(_("Fiscal Code"), max_length=16)
     code = models.CharField(_("Sender code"), max_length=7)
 
-    company_name = models.CharField(_("Company Name"), max_length=10)
+    company_name = models.CharField(_("Company Name"), max_length=80)
 
     tax_regime = models.CharField(
         _("Tax Regime"), choices=TAX_REGIMES, max_length=4
@@ -78,15 +80,19 @@ class Invoice(TimeStampedModel):
         _("Tax code"), blank=True, max_length=16
     )
     recipient_first_name = models.CharField(
-        _("Recipient first name"), blank=True, max_length=100
+        _("Recipient first name"), blank=True, max_length=60
     )
     recipient_last_name = models.CharField(
-        _("Recipient last name"), blank=True, max_length=100
+        _("Recipient last name"), blank=True, max_length=60
     )
     recipient_code = models.CharField(_("Recipient code"), max_length=7)
     recipient_pec = models.EmailField(_("Recipient PEC"), blank=True)
     recipient_address = models.ForeignKey(
         Address, models.PROTECT, verbose_name=_("Recipient Address")
+    )
+
+    invoice_summary = JSONField(
+        validators=[JSONSchemaValidator(PRODUCT_SUMMARY_SCHEMA)]
     )
 
     def to_xml(self):
