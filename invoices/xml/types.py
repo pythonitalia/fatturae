@@ -8,10 +8,10 @@ ProductSummary = TypedDict(
     {
         "row": int,
         "description": str,
-        "quantity": str,
-        "unit_price": str,
-        "total_price": str,
-        "vat_rate": str,
+        "quantity": float,
+        "unit_price": float,
+        "total_price": float,
+        "vat_rate": float,
     },
 )
 

@@ -12,10 +12,10 @@ PRODUCT_SUMMARY_SCHEMA = {
             "properties": {
                 "row": {"type": "integer"},
                 "description": {"type": "string"},
-                "quantity": {"type": "string"},
-                "unit_price": {"type": "string"},
-                "total_price": {"type": "string"},
-                "vat_rate": {"type": "string"},
+                "quantity": {"type": "number"},
+                "unit_price": {"type": "number"},
+                "total_price": {"type": "number"},
+                "vat_rate": {"type": "number"},
             },
             "required": [
                 "row",
