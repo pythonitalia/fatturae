@@ -98,10 +98,10 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                     {
                         "NumeroLinea": x["row"],
                         "Descrizione": x["description"],
-                        "Quantita": x["quantity"],
-                        "PrezzoUnitario": x["unit_price"],
-                        "PrezzoTotale": x["total_price"],
-                        "AliquotaIVA": x["vat_rate"],
+                        "Quantita": "{:.2f}".format(x["quantity"]),
+                        "PrezzoUnitario": "{:.2f}".format(x["unit_price"]),
+                        "PrezzoTotale": "{:.2f}".format(x["total_price"]),
+                        "AliquotaIVA": "{:.2f}".format(x["vat_rate"]),
                     }
                     for x in summary
                 ],
