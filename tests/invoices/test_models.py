@@ -21,12 +21,13 @@ def test_xml_generation(sample_invoice_xml):
 
 
 @pytest.mark.django_db
-def test_xml_header_generation(sender, client_address):
+def test_xml_header_generation(sender, client_address, sample_summary):
     invoice = Invoice(
         sender=sender,
         invoice_number="00001A",
         invoice_type="TD01",
         invoice_currency="EUR",
+        invoice_summary=sample_summary,
         invoice_date=date(2019, 6, 16),
         transmission_format="FPR12",
         recipient_code="ABCDEFG",
@@ -99,31 +100,14 @@ def test_xml_header_generation(sender, client_address):
 
 
 @pytest.mark.django_db
-def test_xml_body_generation(sender, client_address):
+def test_xml_body_generation(sender, client_address, sample_summary):
     invoice = Invoice(
         sender=sender,
         invoice_number="00001A",
         invoice_type="TD01",
         invoice_currency="EUR",
         invoice_date=date(2019, 6, 16),
-        invoice_summary=[
-            {
-                "row": 1,
-                "description": "item 1",
-                "quantity": "1",
-                "unit_price": "1",
-                "total_price": "1",
-                "vat_rate": "0",
-            },
-            {
-                "row": 2,
-                "description": "item 2",
-                "quantity": "2",
-                "unit_price": "2",
-                "total_price": "2",
-                "vat_rate": "0",
-            },
-        ],
+        invoice_summary=sample_summary,
         causal=("A" * 200 + "B" * 200),
         transmission_format="FPR12",
         recipient_code="ABCDEFG",
