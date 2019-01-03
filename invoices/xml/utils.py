@@ -1,4 +1,5 @@
-from typing import List, Dict
+from decimal import Decimal
+from typing import Dict, List
 
 from lxml import etree
 
@@ -41,7 +42,7 @@ def dict_to_xml(dict: XMLDict):
 
                 tags.append(tag)
         else:
-            if isinstance(value, int):
+            if isinstance(value, (int, float, Decimal)):
                 value = str(value)
 
             for tag in _split_tags(key, value):
