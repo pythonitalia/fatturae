@@ -26,6 +26,13 @@ class Address(models.Model):
         _("Country Code"), max_length=2, choices=COUNTRIES
     )
 
+    def __str__(self):
+        return (
+            f"{self.address}{f' {self.city}' if self.city else ''}"
+            f"{f' ({self.province})' if self.province else ''}"
+            f" [{self.country_code}]"
+        )
+
 
 class Sender(TimeStampedModel):
     """Model containing information about a Sender of an electronic invoice.
@@ -101,3 +108,13 @@ class Invoice(TimeStampedModel):
 
     def to_xml(self):
         return invoice_to_xml(self)
+
+    def __str__(self):
+        return (
+            f"[{INVOICE_TYPES[self.invoice_type].title()}/{self.invoice_number}] " + (
+                f"{f'{self.recipient_first_name} {self.recipient_last_name}'}"
+                if self.recipient_first_name and self.recipient_last_name else
+                f"{self.recipient_code}"
+            ) +
+            f"{f': {self.causal}' if self.causal else ''}"
+        )
