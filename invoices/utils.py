@@ -1,6 +1,9 @@
 from django.utils.deconstruct import deconstructible
-
+from django.utils.text import get_valid_filename
 from jsonschema import validate
+
+from io import BytesIO
+import zipfile
 
 
 PRODUCT_SUMMARY_SCHEMA = {
@@ -40,3 +43,11 @@ class JSONSchemaValidator:
 
     def __eq__(self, other):
         return self.schema == other.schema
+
+
+def zip_files(files):
+    outfile = BytesIO()
+    with zipfile.ZipFile(outfile, 'w') as zf:
+        for file in files:
+            zf.writestr(f"{get_valid_filename(file[0])}.xml", file[1])
+    return outfile.getvalue()

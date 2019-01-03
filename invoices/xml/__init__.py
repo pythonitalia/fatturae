@@ -144,4 +144,4 @@ def invoice_to_xml(invoice: Invoice) -> etree._Element:
     for tag in tags:
         root.append(tag)
 
-    return root
+    return etree.tostring(root).decode('utf-8')
