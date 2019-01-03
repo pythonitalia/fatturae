@@ -25,7 +25,7 @@ def invoice_export_to_xml(modeladmin, request, queryset):
     return response
 
 
-invoice_export_to_xml.short_description = _('Export as xml')
+invoice_export_to_xml.short_description = _('Export as xml')  # type: ignore
 
 
 @admin.register(Invoice)
