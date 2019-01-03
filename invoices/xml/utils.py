@@ -24,6 +24,11 @@ def dict_to_xml(dict: XMLDict):
     tags: List[etree._Element] = []
 
     for key, value in dict.items():
+        # skip empty value
+
+        if not value:
+            continue
+
         if isinstance(value, (Dict, List)):
             if not isinstance(value, List):
                 value = [value]
