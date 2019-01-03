@@ -1,5 +1,4 @@
 from django.utils.deconstruct import deconstructible
-from django.utils.text import get_valid_filename
 from jsonschema import validate
 
 from io import BytesIO
