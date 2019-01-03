@@ -109,6 +109,9 @@ class Invoice(TimeStampedModel):
     def to_xml(self):
         return invoice_to_xml(self)
 
+    def get_filename(self):
+        return f'{self.recipient_address.country_code}{self.recipient_code}_{self.invoice_number}.xml'
+
     def __str__(self):
         return (
             f"[{INVOICE_TYPES[self.invoice_type].title()}/{self.invoice_number}] " + (

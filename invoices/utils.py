@@ -49,5 +49,5 @@ def zip_files(files):
     outfile = BytesIO()
     with zipfile.ZipFile(outfile, 'w') as zf:
         for file in files:
-            zf.writestr(f"{get_valid_filename(file[0])}.xml", file[1])
+            zf.writestr(file[0], file[1])
     return outfile.getvalue()
