@@ -14,7 +14,7 @@ def _xml_to_string(xml):
 def test_xml_generation(sample_invoice_xml):
     invoice = Invoice()
 
-    invoice_xml = invoice.to_xml()
+    invoice_xml = _xml_to_string(invoice.to_xml())
     sample_xml = _xml_to_string(sample_invoice_xml)
 
     assert invoice_xml == sample_xml
@@ -37,7 +37,7 @@ def test_xml_header_generation(sender, client_address, sample_summary):
         recipient_address=client_address,
     )
 
-    xml = etree.fromstring(invoice.to_xml())
+    xml = invoice.to_xml()
 
     assert xml is not None
 
@@ -120,7 +120,7 @@ def test_xml_body_generation(sender, client_address, sample_summary):
         recipient_address=client_address,
     )
 
-    xml = etree.fromstring(invoice.to_xml())
+    xml = invoice.to_xml()
 
     assert xml is not None
 

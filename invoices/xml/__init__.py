@@ -125,7 +125,7 @@ def _generate_body(invoice: Invoice) -> XMLDict:
     return body
 
 
-def invoice_to_xml(invoice: Invoice) -> str:
+def invoice_to_xml(invoice: Invoice) -> etree._Element:
     root_tag = "{%s}FatturaElettronica" % NAMESPACE_MAP["p"]
     schema_location_key = "{%s}schemaLocation" % NAMESPACE_MAP["xsi"]
 
@@ -144,4 +144,4 @@ def invoice_to_xml(invoice: Invoice) -> str:
     for tag in tags:
         root.append(tag)
 
-    return etree.tostring(root, pretty_print=True).decode('utf-8')
+    return etree.tostring(root).decode('utf-8')
