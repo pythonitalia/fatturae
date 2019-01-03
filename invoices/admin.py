@@ -9,15 +9,19 @@ from .utils import zip_files, xml_to_string
 def invoice_export_to_xml(modeladmin, request, queryset):
     if len(queryset) == 1:
         model = queryset[0]
-        response = HttpResponse(xml_to_string(model.to_xml()), content_type='text/xml')
+        file = xml_to_string(model.to_xml())
+        response = HttpResponse(file, content_type='text/xml')
         response['Content-Disposition'] = f'attachment; filename={model.get_filename()}'
+        response['Content-Length'] = len(file)
         return response
 
     files = []
     for model in queryset:
         files.append((model.get_filename(), xml_to_string(model.to_xml())))
-    response = HttpResponse(zip_files(files), content_type='application/zip')
+    archive = zip_files(files)
+    response = HttpResponse(archive, content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename=invoices.zip'
+    response['Content-Length'] = len(archive)
     return response
 
 
