@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "t2r(bf!0(*4hq+2a4qg_=)l0zphz(da_+i=8dr@^_q&1pp(ut@"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = True  # env("DEBUG")
 
 ALLOWED_HOSTS: List[str] = []
 
@@ -70,7 +70,14 @@ WSGI_APPLICATION = "fatturae.wsgi.application"
 
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
-    "default": env.db()
+    "default": {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Marco',
+        'USER': 'Marco',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
 
 # Password validation
