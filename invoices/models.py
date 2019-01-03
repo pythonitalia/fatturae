@@ -69,7 +69,7 @@ class Invoice(TimeStampedModel):
     sender = models.ForeignKey(
         Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
     )
-    invoice_number = models.CharField(_("Invoice number"), max_length=100)
+    invoice_number = models.IntegerField(_("Invoice number"))
     invoice_type = models.CharField(
         _("Invoice type"), choices=INVOICE_TYPES, max_length=4
     )
@@ -77,9 +77,9 @@ class Invoice(TimeStampedModel):
         _("Invoice currency"), choices=CURRENCIES, max_length=4
     )
     invoice_date = models.DateField(_("Invoice date"))
-    invoice_tax_rate = models.CharField(_("Invoice tax rate"), max_length=5)
-    invoice_amount = models.CharField(_("Invoice amount"), max_length=10)
-    invoice_tax_amount = models.CharField(_("Invoice tax"), max_length=10)
+    invoice_tax_rate = models.DecimalField(_("Invoice tax rate"), max_digits=5, decimal_places=2)
+    invoice_amount = models.DecimalField(_("Invoice amount"), max_digits=10, decimal_places=2)
+    invoice_tax_amount = models.DecimalField(_("Invoice tax"), max_digits=10, decimal_places=2)
 
     transmission_format = models.CharField(
         _("Transmission format"), choices=TRANSMISSION_FORMATS, max_length=5
