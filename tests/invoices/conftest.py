@@ -1,9 +1,10 @@
 import os
+from datetime import date
 from typing import List
 
 import pytest
 
-from invoices.models import Address, Sender
+from invoices.models import Address, Sender, Invoice
 from invoices.xml.types import ProductSummary
 from lxml import etree
 
@@ -81,3 +82,25 @@ def sample_summary() -> List[ProductSummary]:
             "vat_rate": 0,
         },
     ]
+
+
+@pytest.fixture
+def sample_invoice(sender, sample_summary, client_address) -> Invoice:
+    return Invoice(
+        sender=sender,
+        invoice_number="00001A",
+        invoice_type="TD01",
+        invoice_currency="EUR",
+        invoice_date=date(2019, 6, 16),
+        invoice_summary=sample_summary,
+        invoice_tax_rate=22.00,
+        invoice_amount=2.00,
+        invoice_tax_amount=2.00,
+        causal=("A" * 200 + "B" * 200),
+        transmission_format="FPR12",
+        recipient_code="ABCDEFG",
+        recipient_tax_code="AAABBB12B34Z123D",
+        recipient_first_name="Patrick",
+        recipient_last_name="A",
+        recipient_address=client_address,
+    )
