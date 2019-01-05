@@ -1,8 +1,12 @@
 import os
+import sys
 from typing import List
+from pathlib import Path
 
 import environ
 
+PROJECT_ROOT = Path(".")
+sys.path.insert(0, str(PROJECT_ROOT / "vendor"))
 
 env = environ.Env(DEBUG=(bool, False))
 
@@ -32,6 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "invoices",
+    "webservice",
 ]
 
 MIDDLEWARE = [
