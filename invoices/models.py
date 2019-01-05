@@ -19,8 +19,8 @@ from .xml import invoice_to_xml
 
 class Address(models.Model):
     address = models.CharField(_("Address"), max_length=200)
-    postcode = models.CharField(_("Post Code"), max_length=20, blank=True)
-    city = models.CharField(_("City"), max_length=100, blank=True)
+    postcode = models.CharField(_("Post Code"), max_length=20)
+    city = models.CharField(_("City"), max_length=100)
     province = models.CharField(_("Province"), max_length=100, blank=True)
     country_code = models.CharField(
         _("Country Code"), max_length=2, choices=COUNTRIES
