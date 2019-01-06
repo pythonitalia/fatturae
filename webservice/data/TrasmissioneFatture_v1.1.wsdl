@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soapbind="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:types="http://www.fatturapa.gov.it/sdi/ws/trasmissione/v1.0/types" xmlns:tns="http://www.fatturapa.gov.it/sdi/ws/trasmissione/v1.0" targetNamespace="http://www.fatturapa.gov.it/sdi/ws/trasmissione/v1.0">
+	<!-- TIPI -->
+	<types>
+		<schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:types="http://www.fatturapa.gov.it/sdi/ws/trasmissione/v1.0/types" targetNamespace="http://www.fatturapa.gov.it/sdi/ws/trasmissione/v1.0/types" version="1.1">
+			<!-- ELEMENT -->
+			<element name="fileSdIAccoglienza" type="types:fileSdIBase_Type" />
+			<element name="fileSdI" type="types:fileSdI_Type" />
+			<element name="rispostaSdIRiceviFile" type="types:rispostaSdIRiceviFile_Type" />
+			<element name="ricevutaConsegna" type="types:fileSdI_Type" />
+			<element name="notificaMancataConsegna" type="types:fileSdI_Type" />
+			<element name="notificaScarto" type="types:fileSdI_Type" />
+			<element name="notificaEsito" type="types:fileSdI_Type" />
+			<element name="notificaDecorrenzaTermini" type="types:fileSdI_Type" />
+			<element name="attestazioneTrasmissioneFattura" type="types:fileSdI_Type" />
+			<!-- COMPLEX TYPES -->
+			<complexType name="fileSdIBase_Type">
+				<sequence>
+					<element name="NomeFile" type="types:nomeFile_Type" />
+					<element name="File" type="xsd:base64Binary" xmime:expectedContentTypes="*/*" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" />
+				</sequence>
+			</complexType>
+			<complexType name="fileSdI_Type">
+				<sequence>
+					<element name="IdentificativoSdI" type="types:identificativoSdI_Type" />
+					<element name="NomeFile" type="types:nomeFile_Type" />
+					<element name="File" type="xsd:base64Binary" xmime:expectedContentTypes="*/*" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" />
+				</sequence>
+			</complexType>
+			<complexType name="rispostaSdIRiceviFile_Type">
+				<sequence>
+					<element name="IdentificativoSdI" type="types:identificativoSdI_Type" />
+					<element name="DataOraRicezione" type="xsd:dateTime" />
+					<element name="Errore" type="types:erroreInvio_Type" minOccurs="0" maxOccurs="1" />
+				</sequence>
+			</complexType>
+			<!-- SIMPLE TYPES -->
+			<simpleType name="identificativoSdI_Type">
+				<restriction base="xsd:integer">
+					<totalDigits value="12" />
+				</restriction>
+			</simpleType>
+			<simpleType name="nomeFile_Type">
+				<restriction base="xsd:string">
+					<pattern value="[a-zA-Z0-9_\.]{9,50}" />
+				</restriction>
+			</simpleType>
+			<simpleType name="erroreInvio_Type">
+				<restriction base="xsd:string">
+					<enumeration value="EI01">
+						<annotation>
+							<documentation>
+								EI01 = FILE VUOTO
+							</documentation>
+						</annotation>
+					</enumeration>
+					<enumeration value="EI02">
+						<annotation>
+							<documentation>
+								EI02 = SERVIZIO NON DISPONIBILE
+							</documentation>
+						</annotation>
+					</enumeration>
+					<enumeration value="EI03">
+						<annotation>
+							<documentation>
+								EI03 = UTENTE NON ABILITATO
+							</documentation>
+						</annotation>
+					</enumeration>
+				</restriction>
+			</simpleType>
+		</schema>
+	</types>
+	<!-- MESSAGGI -->
+	<message name="RicevutaConsegnaFatture_Msg">
+		<part name="ricevuta" element="types:ricevutaConsegna" />
+	</message>
+	<message name="NotificaMancataConsegnaFatture_Msg">
+		<part name="mancataConsegna" element="types:notificaMancataConsegna" />
+	</message>
+	<message name="NotificaScartoFatture_Msg">
+		<part name="scarto" element="types:notificaScarto" />
+	</message>
+	<message name="NotificaEsitoFatture_Msg">
+		<part name="esito" element="types:notificaEsito" />
+	</message>
+	<message name="NotificaDecorrenzaTerminiFatture_Msg">
+		<part name="decorrenzaTermini" element="types:notificaDecorrenzaTermini" />
+	</message>
+	<message name="AttestazioneTrasmissioneFattura_Msg">
+		<part name="attestazioneTrasmissioneFattura" element="types:attestazioneTrasmissioneFattura" />
+	</message>
+	<!-- PORT TYPE -->
+	<portType name="TrasmissioneFatture">
+		<operation name="RicevutaConsegna">
+			<input message="tns:RicevutaConsegnaFatture_Msg" />
+		</operation>
+		<operation name="NotificaMancataConsegna">
+			<input message="tns:NotificaMancataConsegnaFatture_Msg" />
+		</operation>
+		<operation name="NotificaScarto">
+			<input message="tns:NotificaScartoFatture_Msg" />
+		</operation>
+		<operation name="NotificaEsito">
+			<input message="tns:NotificaEsitoFatture_Msg" />
+		</operation>
+		<operation name="NotificaDecorrenzaTermini">
+			<input message="tns:NotificaDecorrenzaTerminiFatture_Msg" />
+		</operation>
+		<operation name="AttestazioneTrasmissioneFattura">
+			<input message="tns:AttestazioneTrasmissioneFattura_Msg" />
+		</operation>
+	</portType>
+	<!-- PORT BINDING -->
+	<binding name="TrasmissioneFatture_binding" type="tns:TrasmissioneFatture">
+		<binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="RicevutaConsegna">
+			<operation soapAction="http://www.fatturapa.it/TrasmissioneFatture/RicevutaConsegna" />
+			<input>
+				<body use="literal" />
+			</input>
+		</operation>
+		<operation name="NotificaMancataConsegna">
+			<operation soapAction="http://www.fatturapa.it/TrasmissioneFatture/NotificaMancataConsegna" />
+			<input>
+				<body use="literal" />
+			</input>
+		</operation>
+		<operation name="NotificaScarto">
+			<operation soapAction="http://www.fatturapa.it/TrasmissioneFatture/NotificaScarto" />
+			<input>
+				<body use="literal" />
+			</input>
+		</operation>
+		<operation name="NotificaEsito">
+			<operation soapAction="http://www.fatturapa.it/TrasmissioneFatture/NotificaEsito" />
+			<input>
+				<body use="literal" />
+			</input>
+		</operation>
+		<operation name="NotificaDecorrenzaTermini">
+			<operation soapAction="http://www.fatturapa.it/TrasmissioneFatture/NotificaDecorrenzaTermini" />
+			<input>
+				<body use="literal" />
+			</input>
+		</operation>
+		<operation name="AttestazioneTrasmissioneFattura">
+			<operation soapAction="http://www.fatturapa.it/TrasmissioneFatture/AttestazioneTrasmissioneFattura" />
+			<input>
+				<body use="literal" />
+			</input>
+		</operation>
+	</binding>
+	<service name="TrasmissioneFatture_service">
+		<port name="TrasmissioneFatture_port" binding="tns:TrasmissioneFatture_binding">
+			<address location="http://servizi.fatturapa.it/TrasmissioneFatture" />
+		</port>
+	</service>
+</definitions>
