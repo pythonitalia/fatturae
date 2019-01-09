@@ -21,23 +21,8 @@ def test_xml_generation(sample_invoice_xml):
 
 
 @pytest.mark.django_db
-def test_xml_header_generation(sender, client_address, sample_summary):
-    invoice = Invoice(
-        sender=sender,
-        invoice_number="00001A",
-        invoice_type="TD01",
-        invoice_currency="EUR",
-        invoice_summary=sample_summary,
-        invoice_date=date(2019, 6, 16),
-        transmission_format="FPR12",
-        recipient_code="ABCDEFG",
-        recipient_tax_code="AAABBB12B34Z123D",
-        recipient_first_name="Patrick",
-        recipient_last_name="A",
-        recipient_address=client_address,
-    )
-
-    xml = invoice.to_xml()
+def test_xml_header_generation(sample_invoice):
+    xml = sample_invoice.to_xml()
 
     assert xml is not None
 
