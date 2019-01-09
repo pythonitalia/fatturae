@@ -4,7 +4,7 @@ from typing import List
 
 import pytest
 
-from invoices.models import Address, Sender, Invoice
+from invoices.models import Address, Sender, Invoice, Item
 from invoices.xml.types import ProductSummary
 from lxml import etree
 
@@ -63,36 +63,33 @@ def sender(supplier_address):
 
 
 @pytest.fixture
-def sample_summary() -> List[ProductSummary]:
+def sample_items() -> List[ProductSummary]:
     return [
-        {
-            "row": 1,
-            "description": "item 1",
-            "quantity": 1,
-            "unit_price": 1,
-            "total_price": 1,
-            "vat_rate": 0,
-        },
-        {
-            "row": 2,
-            "description": "item 2",
-            "quantity": 2,
-            "unit_price": 2,
-            "total_price": 2,
-            "vat_rate": 0,
-        },
+        Item(
+            row=1,
+            description="item 1",
+            quantity=1,
+            unit_price=1.,
+            vat_rate=0,
+        ),
+        Item(
+            row=2,
+            description="item 2",
+            quantity=2,
+            unit_price=2,
+            vat_rate=0,
+        ),
     ]
 
 
 @pytest.fixture
-def sample_invoice(sender, sample_summary, client_address) -> Invoice:
-    return Invoice(
+def sample_invoice(sender, sample_items, client_address) -> Invoice:
+    invoice = Invoice(
         sender=sender,
         invoice_number="00001A",
         invoice_type="TD01",
         invoice_currency="EUR",
         invoice_date=date(2019, 6, 16),
-        invoice_summary=sample_summary,
         invoice_tax_rate=22.00,
         invoice_amount=2.00,
         invoice_tax_amount=2.00,
@@ -104,3 +101,9 @@ def sample_invoice(sender, sample_summary, client_address) -> Invoice:
         recipient_last_name="A",
         recipient_address=client_address,
     )
+    invoice.save()
+    for item in sample_items:
+        item.save()
+        invoice.items.add(item)
+    invoice.save()
+    return invoice

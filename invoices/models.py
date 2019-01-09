@@ -1,6 +1,5 @@
 import uuid
 
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -13,7 +12,6 @@ from .constants import (
     TAX_REGIMES,
     TRANSMISSION_FORMATS,
 )
-from .utils import PRODUCT_SUMMARY_SCHEMA, JSONSchemaValidator
 from .xml import invoice_to_xml
 
 
@@ -65,11 +63,27 @@ class Sender(TimeStampedModel):
         return f"{self.name}"
 
 
+class Item(models.Model):
+    row = models.SmallIntegerField(_("Item number"))
+    description = models.CharField(_("Description"), max_length=128)
+    quantity = models.IntegerField(_("Quantity"))
+    unit_price = models.DecimalField(_("Unit price"), max_digits=8, decimal_places=2)
+    vat_rate = models.DecimalField(_("Tax"), max_digits=4, decimal_places=2)
+    invoice = models.ForeignKey("Invoice", related_name='items', on_delete=models.CASCADE, null=True)
+
+    @property
+    def total_price(self):
+        return self.unit_price * self.quantity
+
+    def __str__(self):
+        return f"{self.row}. {self.description} [{self.quantity}*{self.unit_price}]"
+
+
 class Invoice(TimeStampedModel):
     sender = models.ForeignKey(
         Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
     )
-    invoice_number = models.IntegerField(_("Invoice number"))
+    invoice_number = models.CharField(_("Invoice number"), max_length=8)
     invoice_type = models.CharField(
         _("Invoice type"), choices=INVOICE_TYPES, max_length=4
     )
@@ -102,9 +116,19 @@ class Invoice(TimeStampedModel):
         Address, models.PROTECT, verbose_name=_("Recipient Address")
     )
 
-    invoice_summary = JSONField(
-        validators=[JSONSchemaValidator(PRODUCT_SUMMARY_SCHEMA)]
-    )
+    @property
+    def invoice_summary(self):
+        result = list()
+        for item in sorted(self.items.iterator(), key=lambda i: i.row):
+            result.append({
+                'row': item.row,
+                'description': item.description,
+                'quantity': item.quantity,
+                'unit_price': float(item.unit_price),
+                'total_price': float(item.total_price),
+                'vat_rate': float(item.vat_rate),
+            })
+        return result
 
     def to_xml(self):
         return invoice_to_xml(self)

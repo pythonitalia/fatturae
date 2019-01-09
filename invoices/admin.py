@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
 from django.contrib import admin
 
-from .models import Sender, Address, Invoice
+from .models import Sender, Address, Invoice, Item
 from .utils import zip_files, xml_to_string
 
 
@@ -28,10 +28,18 @@ def invoice_export_to_xml(modeladmin, request, queryset):
 invoice_export_to_xml.short_description = _('Export as xml')  # type: ignore
 
 
+class InvoiceItemInline(admin.StackedInline):
+    model = Item
+    extra = 1
+
+
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     actions = [invoice_export_to_xml]
+    exclude = ('items', )
+    inlines = [InvoiceItemInline]
 
 
 admin.site.register(Sender)
 admin.site.register(Address)
+admin.site.register(Item)

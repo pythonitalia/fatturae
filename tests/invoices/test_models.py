@@ -144,7 +144,7 @@ def test_xml_body_generation(sample_invoice):
     assert second_item.xpath("Descrizione")[0].text == "item 2"
     assert second_item.xpath("Quantita")[0].text == "2.00"
     assert second_item.xpath("PrezzoUnitario")[0].text == "2.00"
-    assert second_item.xpath("PrezzoTotale")[0].text == "2.00"
+    assert second_item.xpath("PrezzoTotale")[0].text == "4.00"
     assert second_item.xpath("AliquotaIVA")[0].text == "0.00"
 
     # TODO: this needs to be formatted to have two decimal places
