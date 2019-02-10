@@ -50,6 +50,13 @@ TAX_REGIMES = Choices(
 
 TRANSMISSION_FORMATS = Choices("FPA12", "FPR12")
 
+PAYMENT_CONDITIONS = Choices(
+    ("TP01", "pagamento a rate"),
+    ("TP02", "pagamento completo"),
+    ("TP03", "anticipo"),
+)
+
+
 INVOICE_TYPES = Choices(
     ("TD01", "fattura"),
     ("TD02", "acconto/anticipo su fattura"),
@@ -59,7 +66,7 @@ INVOICE_TYPES = Choices(
     ("TD06", "parcella"),
 )
 
-PAYMENT_METHOD = Choices(
+PAYMENT_METHODS = Choices(
     ("MP01", "contanti"),
     ("MP02", "assegno"),
     ("MP03", "assegno circolare"),
@@ -85,26 +92,56 @@ PAYMENT_METHOD = Choices(
 )
 
 WELFARE_FUND_TYPES = Choices(
-    ("TC01", "Cassa nazionale previdenza e assistenza avvocati e procuratori legali"),
+    (
+        "TC01",
+        "Cassa nazionale previdenza e assistenza avvocati e procuratori legali",
+    ),
     ("TC02", "Cassa previdenza dottori commercialisti"),
     ("TC03", "Cassa previdenza e assistenza geometri"),
-    ("TC04", "Cassa nazionale previdenza e assistenza ingegneri e architetti liberi professionisti"),
+    (
+        "TC04",
+        "Cassa nazionale previdenza e assistenza ingegneri e architetti liberi professionisti",
+    ),
     ("TC05", "Cassa nazionale del notariato"),
-    ("TC06", "Cassa nazionale previdenza e assistenza ragionieri e periti commerciali"),
-    ("TC07", "Ente nazionale assistenza agenti e rappresentanti di commercio (ENASARCO)"),
-    ("TC08", "Ente nazionale previdenza e assistenza consulenti del lavoro (ENPACL)"),
+    (
+        "TC06",
+        "Cassa nazionale previdenza e assistenza ragionieri e periti commerciali",
+    ),
+    (
+        "TC07",
+        "Ente nazionale assistenza agenti e rappresentanti di commercio (ENASARCO)",
+    ),
+    (
+        "TC08",
+        "Ente nazionale previdenza e assistenza consulenti del lavoro (ENPACL)",
+    ),
     ("TC09", "Ente nazionale previdenza e assistenza medici (ENPAM)"),
     ("TC10", "Ente nazionale previdenza e assistenza farmacisti (ENPAF)"),
     ("TC11", "Ente nazionale previdenza e assistenza veterinari (ENPAV)"),
-    ("TC12", "Ente nazionale previdenza e assistenza impiegati dell'agricoltura (ENPAIA)"),
-    ("TC13", "Fondo previdenza impiegati imprese di spedizione e agenzie marittime"),
+    (
+        "TC12",
+        "Ente nazionale previdenza e assistenza impiegati dell'agricoltura (ENPAIA)",
+    ),
+    (
+        "TC13",
+        "Fondo previdenza impiegati imprese di spedizione e agenzie marittime",
+    ),
     ("TC14", "Istituto nazionale previdenza giornalisti italiani (INPGI)"),
     ("TC15", "Opera nazionale assistenza orfani sanitari italiani (ONAOSI)"),
-    ("TC16", "Cassa autonoma assistenza integrativa giornalisti italiani (CASAGIT)"),
-    ("TC17", "Ente previdenza periti industriali e periti industriali laureati (EPPI)"),
+    (
+        "TC16",
+        "Cassa autonoma assistenza integrativa giornalisti italiani (CASAGIT)",
+    ),
+    (
+        "TC17",
+        "Ente previdenza periti industriali e periti industriali laureati (EPPI)",
+    ),
     ("TC18", "Ente previdenza e assistenza pluricategoriale (EPAP)"),
     ("TC19", "Ente nazionale previdenza e assistenza biologi (ENPAB)"),
-    ("TC20", "Ente nazionale previdenza e assistenza professione infermieristica (ENPAPI)"),
+    (
+        "TC20",
+        "Ente nazionale previdenza e assistenza professione infermieristica (ENPAPI)",
+    ),
     ("TC21", "Ente nazionale previdenza e assistenza psicologi (ENPAP)"),
     ("TC22", "INPS"),
 )

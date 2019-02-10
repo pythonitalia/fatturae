@@ -12,7 +12,7 @@ backend you like.
 
 This project is under active development, current TODOs are:
 
--   [ ] generate invoice with real data from django models
+-   [x] generate invoice with real data from django models
 -   [ ] create a REST API to generate, send and archive the invoice
 -   [ ] add CI and deploy setup
 -   [ ] more

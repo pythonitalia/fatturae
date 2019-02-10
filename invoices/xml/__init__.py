@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List
 from lxml import etree
 
 from .types import ProductSummary, XMLDict
-from .utils import dict_to_xml
+from .utils import dict_to_xml, format_price
 
 if TYPE_CHECKING:
     from invoices.models import Invoice, Sender, Address
@@ -98,25 +98,27 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                     {
                         "NumeroLinea": x["row"],
                         "Descrizione": x["description"],
-                        "Quantita": "{:.2f}".format(x["quantity"]),
-                        "PrezzoUnitario": "{:.2f}".format(x["unit_price"]),
-                        "PrezzoTotale": "{:.2f}".format(x["total_price"]),
-                        "AliquotaIVA": "{:.2f}".format(x["vat_rate"]),
+                        "Quantita": format_price(x["quantity"]),
+                        "PrezzoUnitario": format_price(x["unit_price"]),
+                        "PrezzoTotale": format_price(x["total_price"]),
+                        "AliquotaIVA": format_price(x["vat_rate"]),
                     }
                     for x in summary
                 ],
                 "DatiRiepilogo": {
-                    "AliquotaIVA": invoice.invoice_tax_rate,
-                    "ImponibileImporto": invoice.invoice_amount,
-                    "Imposta": invoice.invoice_tax_amount,
+                    "AliquotaIVA": format_price(invoice.invoice_tax_rate),
+                    "ImponibileImporto": format_price(invoice.invoice_amount),
+                    "Imposta": format_price(invoice.invoice_tax_amount),
                 },
             },
             "DatiPagamento": {
-                "CondizioniPagamento": "TP01",
+                "CondizioniPagamento": invoice.payment_condition,
                 "DettaglioPagamento": {
-                    "ModalitaPagamento": "MP01",
-                    "DataScadenzaPagamento": "2017-02-18",
-                    "ImportoPagamento": "6.10",
+                    "ModalitaPagamento": invoice.payment_method,
+                    "DataScadenzaPagamento": invoice.invoice_deadline.strftime(
+                        "%Y-%m-%d"
+                    ),
+                    "ImportoPagamento": format_price(invoice.invoice_amount),
                 },
             },
         }
