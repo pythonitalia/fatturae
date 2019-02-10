@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from invoices.models import Invoice
+from invoices.models import Invoice, Address
 from lxml import etree
 
 
@@ -21,23 +21,8 @@ def test_xml_generation(sample_invoice_xml):
 
 
 @pytest.mark.django_db
-def test_xml_header_generation(sender, client_address, sample_summary):
-    invoice = Invoice(
-        sender=sender,
-        invoice_number="00001A",
-        invoice_type="TD01",
-        invoice_currency="EUR",
-        invoice_summary=sample_summary,
-        invoice_date=date(2019, 6, 16),
-        transmission_format="FPR12",
-        recipient_code="ABCDEFG",
-        recipient_tax_code="AAABBB12B34Z123D",
-        recipient_first_name="Patrick",
-        recipient_last_name="A",
-        recipient_address=client_address,
-    )
-
-    xml = invoice.to_xml()
+def test_xml_header_generation(sample_invoice):
+    xml = sample_invoice.to_xml()
 
     assert xml is not None
 
@@ -100,27 +85,8 @@ def test_xml_header_generation(sender, client_address, sample_summary):
 
 
 @pytest.mark.django_db
-def test_xml_body_generation(sender, client_address, sample_summary):
-    invoice = Invoice(
-        sender=sender,
-        invoice_number="00001A",
-        invoice_type="TD01",
-        invoice_currency="EUR",
-        invoice_date=date(2019, 6, 16),
-        invoice_summary=sample_summary,
-        invoice_tax_rate=22.00,
-        invoice_amount=2.00,
-        invoice_tax_amount=2.00,
-        causal=("A" * 200 + "B" * 200),
-        transmission_format="FPR12",
-        recipient_code="ABCDEFG",
-        recipient_tax_code="AAABBB12B34Z123D",
-        recipient_first_name="Patrick",
-        recipient_last_name="A",
-        recipient_address=client_address,
-    )
-
-    xml = invoice.to_xml()
+def test_xml_body_generation(sample_invoice):
+    xml = sample_invoice.to_xml()
 
     assert xml is not None
 
@@ -163,10 +129,45 @@ def test_xml_body_generation(sender, client_address, sample_summary):
     assert second_item.xpath("Descrizione")[0].text == "item 2"
     assert second_item.xpath("Quantita")[0].text == "2.00"
     assert second_item.xpath("PrezzoUnitario")[0].text == "2.00"
-    assert second_item.xpath("PrezzoTotale")[0].text == "2.00"
+    assert second_item.xpath("PrezzoTotale")[0].text == "4.00"
     assert second_item.xpath("AliquotaIVA")[0].text == "0.00"
 
     # TODO: this needs to be formatted to have two decimal places
     assert summary.xpath("DatiRiepilogo/AliquotaIVA")[0].text == "22.0"
     assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.0"
     assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "2.0"
+
+
+def test_address_string():
+    ad1 = Address(
+        address='Via dei matti, 0',
+        postcode='12345',
+        city='Agrigento',
+        province='AG',
+        country_code='IT'
+    )
+    ad2 = Address(
+        address='Via Dante Alighieri, 4',
+        country_code='IT',
+    )
+    ad3 = Address(
+        address='Via Roma, 9',
+        city='Treviglio',
+        province='BG',
+        country_code='IT',
+    )
+
+    assert str(ad1) == 'Via dei matti, 0 Agrigento (AG) [IT]'
+    assert str(ad2) == 'Via Dante Alighieri, 4 [IT]'
+    assert str(ad3) == 'Via Roma, 9 Treviglio (BG) [IT]'
+
+
+@pytest.mark.django_db
+def test_invoice_string(sample_invoice):
+    assert str(sample_invoice) == '[Fattura/00001A] Patrick A: ' + ('A' * 200 + 'B' * 200)
+    assert sample_invoice.get_filename() == 'ITABCDEFG_00001A.xml'
+
+
+@pytest.mark.django_db
+def test_sender_string(sender):
+    assert str(sender) == 'Python Italia APS'

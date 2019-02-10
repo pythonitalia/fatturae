@@ -1,6 +1,9 @@
 from django.utils.deconstruct import deconstructible
-
 from jsonschema import validate
+
+from io import BytesIO
+from lxml import etree
+import zipfile
 
 
 PRODUCT_SUMMARY_SCHEMA = {
@@ -40,3 +43,15 @@ class JSONSchemaValidator:
 
     def __eq__(self, other):
         return self.schema == other.schema
+
+
+def zip_files(files):
+    outfile = BytesIO()
+    with zipfile.ZipFile(outfile, 'w') as zf:
+        for file in files:
+            zf.writestr(file[0], file[1])
+    return outfile.getvalue()
+
+
+def xml_to_string(xml):
+    return etree.tostring(xml, pretty_print=True).decode('utf-8')
