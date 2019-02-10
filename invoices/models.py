@@ -97,6 +97,7 @@ class Invoice(TimeStampedModel):
         _("Invoice currency"), choices=CURRENCIES, max_length=4
     )
     invoice_date = models.DateField(_("Invoice date"))
+    invoice_deadline = models.DateField(_("Invoice deadline"))
     invoice_tax_rate = models.DecimalField(
         _("Invoice tax rate"), max_digits=5, decimal_places=2
     )

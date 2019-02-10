@@ -82,6 +82,7 @@ def sample_invoice(sender, sample_items, client_address) -> Invoice:
         invoice_type="TD01",
         invoice_currency="EUR",
         invoice_date=date(2019, 6, 16),
+        invoice_deadline=date(2019, 5, 2),
         invoice_tax_rate=22.00,
         invoice_amount=2.00,
         invoice_tax_amount=2.00,
