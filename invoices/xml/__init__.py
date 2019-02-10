@@ -118,7 +118,7 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                     "DataScadenzaPagamento": invoice.invoice_deadline.strftime(
                         "%Y-%m-%d"
                     ),
-                    "ImportoPagamento": "6.10",
+                    "ImportoPagamento": format_price(invoice.invoice_amount),
                 },
             },
         }
