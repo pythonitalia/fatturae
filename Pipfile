@@ -11,6 +11,7 @@ django-model-utils = "*"
 jsonschema = "*"
 "psycopg2-binary" = "*"
 django-environ = "*"
+djangorestframework = "*"
 
 [dev-packages]
 pytest = "*"
