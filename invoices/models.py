@@ -9,6 +9,7 @@ from .constants import (
     COUNTRIES,
     CURRENCIES,
     INVOICE_TYPES,
+    PAYMENT_CONDITIONS,
     TAX_REGIMES,
     TRANSMISSION_FORMATS,
 )
@@ -67,9 +68,13 @@ class Item(models.Model):
     row = models.SmallIntegerField(_("Item number"))
     description = models.CharField(_("Description"), max_length=128)
     quantity = models.IntegerField(_("Quantity"))
-    unit_price = models.DecimalField(_("Unit price"), max_digits=8, decimal_places=2)
+    unit_price = models.DecimalField(
+        _("Unit price"), max_digits=8, decimal_places=2
+    )
     vat_rate = models.DecimalField(_("Tax"), max_digits=4, decimal_places=2)
-    invoice = models.ForeignKey("Invoice", related_name='items', on_delete=models.CASCADE, null=True)
+    invoice = models.ForeignKey(
+        "Invoice", related_name="items", on_delete=models.CASCADE, null=True
+    )
 
     @property
     def total_price(self):
@@ -91,12 +96,22 @@ class Invoice(TimeStampedModel):
         _("Invoice currency"), choices=CURRENCIES, max_length=4
     )
     invoice_date = models.DateField(_("Invoice date"))
-    invoice_tax_rate = models.DecimalField(_("Invoice tax rate"), max_digits=5, decimal_places=2)
-    invoice_amount = models.DecimalField(_("Invoice amount"), max_digits=10, decimal_places=2)
-    invoice_tax_amount = models.DecimalField(_("Invoice tax"), max_digits=10, decimal_places=2)
+    invoice_tax_rate = models.DecimalField(
+        _("Invoice tax rate"), max_digits=5, decimal_places=2
+    )
+    invoice_amount = models.DecimalField(
+        _("Invoice amount"), max_digits=10, decimal_places=2
+    )
+    invoice_tax_amount = models.DecimalField(
+        _("Invoice tax"), max_digits=10, decimal_places=2
+    )
 
     transmission_format = models.CharField(
         _("Transmission format"), choices=TRANSMISSION_FORMATS, max_length=5
+    )
+
+    payment_condition = models.CharField(
+        _("Payment condition"), choices=PAYMENT_CONDITIONS, max_length=5
     )
 
     causal = models.TextField(_("Causal"), blank=True)
@@ -120,28 +135,31 @@ class Invoice(TimeStampedModel):
     def invoice_summary(self):
         result = list()
         for item in sorted(self.items.iterator(), key=lambda i: i.row):
-            result.append({
-                'row': item.row,
-                'description': item.description,
-                'quantity': item.quantity,
-                'unit_price': float(item.unit_price),
-                'total_price': float(item.total_price),
-                'vat_rate': float(item.vat_rate),
-            })
+            result.append(
+                {
+                    "row": item.row,
+                    "description": item.description,
+                    "quantity": item.quantity,
+                    "unit_price": float(item.unit_price),
+                    "total_price": float(item.total_price),
+                    "vat_rate": float(item.vat_rate),
+                }
+            )
         return result
 
     def to_xml(self):
         return invoice_to_xml(self)
 
     def get_filename(self):
-        return f'{self.recipient_address.country_code}{self.recipient_code}_{self.invoice_number}.xml'
+        return f"{self.recipient_address.country_code}{self.recipient_code}_{self.invoice_number}.xml"
 
     def __str__(self):
         return (
-            f"[{INVOICE_TYPES[self.invoice_type].title()}/{self.invoice_number}] " + (
+            f"[{INVOICE_TYPES[self.invoice_type].title()}/{self.invoice_number}] "
+            + (
                 f"{f'{self.recipient_first_name} {self.recipient_last_name}'}"
-                if self.recipient_first_name and self.recipient_last_name else
-                f"{self.recipient_code}"
-            ) +
-            f"{f': {self.causal}' if self.causal else ''}"
+                if self.recipient_first_name and self.recipient_last_name
+                else f"{self.recipient_code}"
+            )
+            + f"{f': {self.causal}' if self.causal else ''}"
         )

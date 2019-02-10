@@ -137,37 +137,40 @@ def test_xml_body_generation(sample_invoice):
     assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.0"
     assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "2.0"
 
+    # Payment data
+
+    assert body.xpath("DatiPagamento/CondizioniPagamento")[0].text == "TP02"
+
 
 def test_address_string():
     ad1 = Address(
-        address='Via dei matti, 0',
-        postcode='12345',
-        city='Agrigento',
-        province='AG',
-        country_code='IT'
+        address="Via dei matti, 0",
+        postcode="12345",
+        city="Agrigento",
+        province="AG",
+        country_code="IT",
     )
-    ad2 = Address(
-        address='Via Dante Alighieri, 4',
-        country_code='IT',
-    )
+    ad2 = Address(address="Via Dante Alighieri, 4", country_code="IT")
     ad3 = Address(
-        address='Via Roma, 9',
-        city='Treviglio',
-        province='BG',
-        country_code='IT',
+        address="Via Roma, 9",
+        city="Treviglio",
+        province="BG",
+        country_code="IT",
     )
 
-    assert str(ad1) == 'Via dei matti, 0 Agrigento (AG) [IT]'
-    assert str(ad2) == 'Via Dante Alighieri, 4 [IT]'
-    assert str(ad3) == 'Via Roma, 9 Treviglio (BG) [IT]'
+    assert str(ad1) == "Via dei matti, 0 Agrigento (AG) [IT]"
+    assert str(ad2) == "Via Dante Alighieri, 4 [IT]"
+    assert str(ad3) == "Via Roma, 9 Treviglio (BG) [IT]"
 
 
 @pytest.mark.django_db
 def test_invoice_string(sample_invoice):
-    assert str(sample_invoice) == '[Fattura/00001A] Patrick A: ' + ('A' * 200 + 'B' * 200)
-    assert sample_invoice.get_filename() == 'ITABCDEFG_00001A.xml'
+    assert str(sample_invoice) == "[Fattura/00001A] Patrick A: " + (
+        "A" * 200 + "B" * 200
+    )
+    assert sample_invoice.get_filename() == "ITABCDEFG_00001A.xml"
 
 
 @pytest.mark.django_db
 def test_sender_string(sender):
-    assert str(sender) == 'Python Italia APS'
+    assert str(sender) == "Python Italia APS"

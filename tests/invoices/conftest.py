@@ -66,18 +66,10 @@ def sender(supplier_address):
 def sample_items() -> List[ProductSummary]:
     return [
         Item(
-            row=1,
-            description="item 1",
-            quantity=1,
-            unit_price=1.,
-            vat_rate=0,
+            row=1, description="item 1", quantity=1, unit_price=1.0, vat_rate=0
         ),
         Item(
-            row=2,
-            description="item 2",
-            quantity=2,
-            unit_price=2,
-            vat_rate=0,
+            row=2, description="item 2", quantity=2, unit_price=2, vat_rate=0
         ),
     ]
 
@@ -95,6 +87,7 @@ def sample_invoice(sender, sample_items, client_address) -> Invoice:
         invoice_tax_amount=2.00,
         causal=("A" * 200 + "B" * 200),
         transmission_format="FPR12",
+        payment_condition="TP02",
         recipient_code="ABCDEFG",
         recipient_tax_code="AAABBB12B34Z123D",
         recipient_first_name="Patrick",
