@@ -132,10 +132,9 @@ def test_xml_body_generation(sample_invoice):
     assert second_item.xpath("PrezzoTotale")[0].text == "4.00"
     assert second_item.xpath("AliquotaIVA")[0].text == "0.00"
 
-    # TODO: this needs to be formatted to have two decimal places
-    assert summary.xpath("DatiRiepilogo/AliquotaIVA")[0].text == "22.0"
-    assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.0"
-    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "2.0"
+    assert summary.xpath("DatiRiepilogo/AliquotaIVA")[0].text == "22.00"
+    assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.00"
+    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "2.00"
 
     # Payment data
 

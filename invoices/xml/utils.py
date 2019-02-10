@@ -49,3 +49,7 @@ def dict_to_xml(dict: XMLDict):
                 tags.append(tag)
 
     return tags
+
+
+def format_price(value):
+    return "{:.2f}".format(value)
