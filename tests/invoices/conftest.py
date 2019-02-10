@@ -88,6 +88,7 @@ def sample_invoice(sender, sample_items, client_address) -> Invoice:
         causal=("A" * 200 + "B" * 200),
         transmission_format="FPR12",
         payment_condition="TP02",
+        payment_method="MP08",
         recipient_code="ABCDEFG",
         recipient_tax_code="AAABBB12B34Z123D",
         recipient_first_name="Patrick",

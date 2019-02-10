@@ -66,7 +66,7 @@ INVOICE_TYPES = Choices(
     ("TD06", "parcella"),
 )
 
-PAYMENT_METHOD = Choices(
+PAYMENT_METHODS = Choices(
     ("MP01", "contanti"),
     ("MP02", "assegno"),
     ("MP03", "assegno circolare"),

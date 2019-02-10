@@ -140,6 +140,12 @@ def test_xml_body_generation(sample_invoice):
 
     assert body.xpath("DatiPagamento/CondizioniPagamento")[0].text == "TP02"
 
+    # payment details
+
+    payment_details = body.xpath("DatiPagamento/DettaglioPagamento")[0]
+
+    assert payment_details.xpath("ModalitaPagamento")[0].text == "MP08"
+
 
 def test_address_string():
     ad1 = Address(

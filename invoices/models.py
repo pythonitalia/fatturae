@@ -10,6 +10,7 @@ from .constants import (
     CURRENCIES,
     INVOICE_TYPES,
     PAYMENT_CONDITIONS,
+    PAYMENT_METHODS,
     TAX_REGIMES,
     TRANSMISSION_FORMATS,
 )
@@ -112,6 +113,10 @@ class Invoice(TimeStampedModel):
 
     payment_condition = models.CharField(
         _("Payment condition"), choices=PAYMENT_CONDITIONS, max_length=5
+    )
+
+    payment_method = models.CharField(
+        _("Payment method"), choices=PAYMENT_METHODS, max_length=5
     )
 
     causal = models.TextField(_("Causal"), blank=True)
