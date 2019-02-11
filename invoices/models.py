@@ -13,6 +13,8 @@ from .constants import (
     PAYMENT_METHODS,
     TAX_REGIMES,
     TRANSMISSION_FORMATS,
+    RETENTION_TYPES,
+    RETENTION_CAUSALS,
 )
 from .xml import invoice_to_xml
 
