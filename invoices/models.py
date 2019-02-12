@@ -15,6 +15,7 @@ from .constants import (
     TRANSMISSION_FORMATS,
     RETENTION_TYPES,
     RETENTION_CAUSALS,
+    WELFARE_FUND_TYPES,
 )
 from .xml import invoice_to_xml
 
@@ -34,6 +35,9 @@ class Address(models.Model):
             f"{f' ({self.province})' if self.province else ''}"
             f" [{self.country_code}]"
         )
+
+    class Meta:
+        verbose_name_plural = 'Addresses'
 
 
 class Sender(TimeStampedModel):
@@ -87,10 +91,36 @@ class Item(models.Model):
         return f"{self.row}. {self.description} [{self.quantity}*{self.unit_price}]"
 
 
+class Retention(TimeStampedModel):
+    retention_type = models.CharField(_('Retention type'), choices=RETENTION_TYPES, max_length=4)
+    retention_amount = models.DecimalField(_("Retention amount"), max_digits=10, decimal_places=2)
+    retention_rate = models.DecimalField(_("Retention rate"), max_digits=5, decimal_places=2)
+    retention_causal = models.CharField(_('Causal'), choices=RETENTION_CAUSALS, max_length=2)
+
+def __str__(self):
+    return f"Retention {self.retention_type}"
+
+
+class WelfareFund(TimeStampedModel):
+    welfare_type = models.CharField(_('Welfare type'), choices=WELFARE_FUND_TYPES, max_length=4)
+    welfare_rate = models.DecimalField(_("Welfare rate"), max_digits=5, decimal_places=2)
+    welfare_contribution = models.DecimalField(_("Welfare contribution"),
+                                                 max_digits=10, decimal_places=2)
+    welfare_taxable = models.DecimalField(_("Welfare taxable"), max_digits=10, decimal_places=2)
+    welfare_vat_rate = models.DecimalField(_("Welfare vat rate"), max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"WelfareFund {self.welfare_type}"
+
+
+
 class Invoice(TimeStampedModel):
     sender = models.ForeignKey(
         Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
     )
+    retention = models.OneToOneField(Retention, on_delete=models.PROTECT, blank=True, null=True)
+    welfare_fund = models.OneToOneField(WelfareFund, on_delete=models.PROTECT,
+                                        blank=True, null=True)
     invoice_number = models.CharField(_("Invoice number"), max_length=8)
     invoice_type = models.CharField(
         _("Invoice type"), choices=INVOICE_TYPES, max_length=4
@@ -154,6 +184,14 @@ class Invoice(TimeStampedModel):
                 }
             )
         return result
+
+    @property
+    def has_retention(self):
+        return self.retention is not None
+
+    @property
+    def has_welfare_fund(self):
+        return self.welfare_fund is not None
 
     def to_xml(self):
         return invoice_to_xml(self)
