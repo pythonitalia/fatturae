@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
 from django.contrib import admin
 
-from .models import Sender, Address, Invoice, Item
+from .models import Sender, Address, Invoice, Item, Retention, WelfareFund
 from .utils import zip_files, xml_to_string
 
 
@@ -43,3 +43,5 @@ class InvoiceAdmin(admin.ModelAdmin):
 admin.site.register(Sender)
 admin.site.register(Address)
 admin.site.register(Item)
+admin.site.register(Retention)
+admin.site.register(WelfareFund)
