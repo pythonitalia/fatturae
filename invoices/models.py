@@ -97,8 +97,8 @@ class Retention(TimeStampedModel):
     retention_rate = models.DecimalField(_("Retention rate"), max_digits=5, decimal_places=2)
     retention_causal = models.CharField(_('Causal'), choices=RETENTION_CAUSALS, max_length=2)
 
-def __str__(self):
-    return f"Retention {self.retention_type}"
+    def __str__(self):
+        return f"Retention {self.retention_type}"
 
 
 class WelfareFund(TimeStampedModel):
