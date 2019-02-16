@@ -16,8 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from rest_framework.schemas import get_schema_view
+
+
+schema_view = get_schema_view(title="Fatturae API")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("invoices.urls")),
+    path("api/schema/", schema_view),
+    path("api/", include("invoices.urls")),
 ]

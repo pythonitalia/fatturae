@@ -12,6 +12,7 @@ jsonschema = "*"
 "psycopg2-binary" = "*"
 django-environ = "*"
 djangorestframework = "*"
+coreapi = "*"
 
 [dev-packages]
 pytest = "*"
