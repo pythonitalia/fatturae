@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 from rest_framework.schemas import get_schema_view
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 schema_view = get_schema_view(title="Fatturae API")
 

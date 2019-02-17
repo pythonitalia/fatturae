@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,6 +17,7 @@ from .constants import (
     RETENTION_TYPES,
     RETENTION_CAUSALS,
 )
+from .managers import SenderManager
 from .xml import invoice_to_xml
 
 
@@ -62,6 +64,12 @@ class Sender(TimeStampedModel):
     address = models.ForeignKey(
         Address, models.PROTECT, verbose_name=_("Address")
     )
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT
+    )
+
+    objects = SenderManager()
 
     def __str__(self):
         return f"{self.name}"
