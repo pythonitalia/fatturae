@@ -37,7 +37,7 @@ def test_xml_header_generation(sample_invoice):
 
     assert t_data.xpath("IdTrasmittente/IdPaese")[0].text == "IT"
     assert t_data.xpath("IdTrasmittente/IdCodice")[0].text == "PIABCDE"
-    assert t_data.xpath("ProgressivoInvio")[0].text == "00001A"
+    assert t_data.xpath("ProgressivoInvio")[0].text == "1"
     assert t_data.xpath("FormatoTrasmissione")[0].text == "FPR12"
     # TODO: test PEC address
     assert t_data.xpath("CodiceDestinatario")[0].text == "ABCDEFG"

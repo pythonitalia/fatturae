@@ -36,7 +36,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                     "IdPaese": sender.country_code,
                     "IdCodice": sender.code,
                 },
-                "ProgressivoInvio": invoice.invoice_number,
+                "ProgressivoInvio": 1,
                 "FormatoTrasmissione": invoice.transmission_format,
                 "CodiceDestinatario": invoice.recipient_code,
             },
