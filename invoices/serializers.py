@@ -19,6 +19,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "invoice_type",
             "invoice_currency",
             "invoice_date",
+            "invoice_deadline",
             "invoice_tax_rate",
             "invoice_amount",
             "invoice_tax_amount",

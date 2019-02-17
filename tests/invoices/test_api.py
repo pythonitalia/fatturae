@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.urls import reverse
 
@@ -30,6 +30,9 @@ def test_creates_with_users_sender(api_client, user, sender):
             "invoice_type": "TD01",
             "invoice_tax_rate": 22.0,
             "invoice_date": date.today().isoformat(),
+            "invoice_deadline": (
+                date.today() + timedelta(days=30)
+            ).isoformat(),
             "invoice_amount": 30,
             "recipient_code": "XXXXXXX",
         },
