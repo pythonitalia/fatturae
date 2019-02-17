@@ -99,7 +99,7 @@ class Invoice(TimeStampedModel):
     sender = models.ForeignKey(
         Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
     )
-    invoice_number = models.CharField(_("Invoice number"), max_length=8)
+    invoice_number = models.CharField(_("Invoice number"), max_length=20)
     invoice_type = models.CharField(
         _("Invoice type"), choices=INVOICE_TYPES, max_length=4
     )
