@@ -135,6 +135,9 @@ class Invoice(TimeStampedModel):
     recipient_tax_code = models.CharField(
         _("Tax code"), blank=True, max_length=16
     )
+    recipient_denomination = models.CharField(
+        _("Recipient denomination"), blank=True, max_length=80
+    )
     recipient_first_name = models.CharField(
         _("Recipient first name"), blank=True, max_length=60
     )
@@ -167,7 +170,9 @@ class Invoice(TimeStampedModel):
         return invoice_to_xml(self)
 
     def get_filename(self):
-        return f"{self.recipient_address.country_code}{self.recipient_code}_{self.invoice_number}.xml"
+        return (
+            f"{self.recipient_address.country_code}{self.recipient_code}_1.xml"
+        )
 
     def __str__(self):
         return (

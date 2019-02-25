@@ -175,7 +175,7 @@ def test_invoice_string(sample_invoice):
     assert str(sample_invoice) == "[Fattura/00001A] Patrick A: " + (
         "A" * 200 + "B" * 200
     )
-    assert sample_invoice.get_filename() == "ITABCDEFG_00001A.xml"
+    assert sample_invoice.get_filename() == "ITABCDEFG_1.xml"
 
 
 @pytest.mark.django_db

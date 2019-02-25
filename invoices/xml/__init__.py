@@ -61,6 +61,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 "DatiAnagrafici": {
                     "CodiceFiscale": invoice.recipient_tax_code,
                     "Anagrafica": {
+                        "Denominazione": invoice.recipient_denomination,
                         "Nome": invoice.recipient_first_name,
                         "Cognome": invoice.recipient_last_name,
                     },
@@ -108,7 +109,9 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                 "DatiRiepilogo": {
                     "AliquotaIVA": format_price(invoice.invoice_tax_rate),
                     "ImponibileImporto": format_price(invoice.invoice_amount),
-                    "Imposta": format_price(invoice.invoice_tax_amount),
+                    "Imposta": format_price(
+                        invoice.invoice_tax_rate * invoice.invoice_amount / 100
+                    ),
                 },
             },
             "DatiPagamento": {
