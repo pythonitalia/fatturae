@@ -18,6 +18,8 @@ class ItemSerializer(serializers.ModelSerializer):
 class InvoiceSerializer(serializers.ModelSerializer):
     recipient_address = AddressSerializer()
     items = ItemSerializer(many=True)
+    recipient_code = serializers.CharField(required=False)
+    recipient_pec = serializers.EmailField(required=False)
 
     class Meta:
         model = Invoice
@@ -71,6 +73,14 @@ class InvoiceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "You need to specify either recipient_denomination or "
                 "both recipient_first_name and recipient_last_name"
+            )
+
+        code = data.get("recipient_code")
+        pec = data.get("recipient_pec")
+
+        if not any([code, pec]):
+            raise serializers.ValidationError(
+                "You need to specify either recipient_code or recipient_pec"
             )
 
         return data
