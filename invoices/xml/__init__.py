@@ -44,7 +44,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 "DatiAnagrafici": {
                     "IdFiscaleIVA": {
                         "IdPaese": sender.country_code,
-                        "IdCodice": "01234567890",
+                        "IdCodice": sender.code,
                     },
                     "Anagrafica": {"Denominazione": sender.company_name},
                     "RegimeFiscale": sender.tax_regime,
