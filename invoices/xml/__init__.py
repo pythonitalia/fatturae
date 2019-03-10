@@ -24,6 +24,13 @@ SCHEMA_LOCATION = (
 )
 
 
+def _get_recipient_code(invoice: Invoice) -> str:
+    if not invoice.recipient_code:
+        return "0000000"
+
+    return invoice.recipient_code
+
+
 def _generate_header(invoice: Invoice) -> XMLDict:
     sender: Sender = invoice.sender
     address: Address = sender.address
@@ -38,7 +45,8 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 },
                 "ProgressivoInvio": 1,
                 "FormatoTrasmissione": invoice.transmission_format,
-                "CodiceDestinatario": invoice.recipient_code,
+                "CodiceDestinatario": _get_recipient_code(invoice),
+                "PecDestinatario": invoice.recipient_pec,
             },
             "CedentePrestatore": {
                 "DatiAnagrafici": {
