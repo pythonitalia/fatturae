@@ -37,10 +37,10 @@ def test_xml_header_generation(sample_invoice):
 
     assert t_data.xpath("IdTrasmittente/IdPaese")[0].text == "IT"
     assert t_data.xpath("IdTrasmittente/IdCodice")[0].text == "PIABCDE"
-    assert t_data.xpath("ProgressivoInvio")[0].text == "00001A"
+    assert t_data.xpath("ProgressivoInvio")[0].text == "1"
     assert t_data.xpath("FormatoTrasmissione")[0].text == "FPR12"
-    # TODO: test PEC address
     assert t_data.xpath("CodiceDestinatario")[0].text == "ABCDEFG"
+    assert len(t_data.xpath("PecDestinatario")) == 0
 
     # TODO: might need to add this to the invoice, in order to be able to
     # TODO: use different party for invoices (if ever needed)
@@ -82,6 +82,26 @@ def test_xml_header_generation(sample_invoice):
     assert ca_data.xpath("Comune")[0].text == "Avellino"
     assert ca_data.xpath("Provincia")[0].text == "AV"
     assert ca_data.xpath("Nazione")[0].text == "IT"
+
+
+@pytest.mark.django_db
+def test_xml_header_generation_with_pec(sample_invoice):
+    sample_invoice.recipient_code = ""
+    sample_invoice.recipient_pec = "patrick@python.it"
+
+    xml = sample_invoice.to_xml()
+
+    header = xml.xpath(
+        "/p:FatturaElettronica/FatturaElettronicaHeader",
+        namespaces={
+            "p": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"
+        },
+    )[0]
+
+    t_data = header.xpath("DatiTrasmissione")[0]
+
+    assert t_data.xpath("CodiceDestinatario")[0].text == "0000000"
+    assert t_data.xpath("PecDestinatario")[0].text == "patrick@python.it"
 
 
 @pytest.mark.django_db
@@ -134,7 +154,7 @@ def test_xml_body_generation(sample_invoice):
 
     assert summary.xpath("DatiRiepilogo/AliquotaIVA")[0].text == "22.00"
     assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.00"
-    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "2.00"
+    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "0.44"
 
     # Payment data
 
@@ -175,7 +195,7 @@ def test_invoice_string(sample_invoice):
     assert str(sample_invoice) == "[Fattura/00001A] Patrick A: " + (
         "A" * 200 + "B" * 200
     )
-    assert sample_invoice.get_filename() == "ITABCDEFG_00001A.xml"
+    assert sample_invoice.get_filename() == "ITABCDEFG_1.xml"
 
 
 @pytest.mark.django_db

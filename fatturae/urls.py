@@ -14,6 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
-urlpatterns = [path("admin/", admin.site.urls)]
+from rest_framework.schemas import get_schema_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+
+schema_view = get_schema_view(title="Fatturae API")
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/schema/", schema_view),
+    path("api/", include("invoices.urls")),
+]

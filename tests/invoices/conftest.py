@@ -4,9 +4,16 @@ from typing import List
 
 import pytest
 
-from invoices.models import Address, Sender, Invoice, Item
+from invoices.models import Address, Invoice, Item, Sender
 from invoices.xml.types import ProductSummary
 from lxml import etree
+
+
+@pytest.fixture
+def user(django_user_model):
+    return django_user_model.objects.create_user(
+        username="matteo", password="123456"
+    )
 
 
 @pytest.fixture
@@ -49,7 +56,7 @@ def client_address():
 
 
 @pytest.fixture
-def sender(supplier_address):
+def sender(supplier_address, user):
     return Sender.objects.create(
         name="Python Italia APS",
         code="PIABCDE",
@@ -59,6 +66,7 @@ def sender(supplier_address):
         company_name="Python Italia APS",
         tax_regime="RF01",
         address=supplier_address,
+        user=user,
     )
 
 

@@ -24,6 +24,13 @@ SCHEMA_LOCATION = (
 )
 
 
+def _get_recipient_code(invoice: Invoice) -> str:
+    if not invoice.recipient_code:
+        return "0000000"
+
+    return invoice.recipient_code
+
+
 def _generate_header(invoice: Invoice) -> XMLDict:
     sender: Sender = invoice.sender
     address: Address = sender.address
@@ -36,15 +43,16 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                     "IdPaese": sender.country_code,
                     "IdCodice": sender.code,
                 },
-                "ProgressivoInvio": invoice.invoice_number,
+                "ProgressivoInvio": 1,
                 "FormatoTrasmissione": invoice.transmission_format,
-                "CodiceDestinatario": invoice.recipient_code,
+                "CodiceDestinatario": _get_recipient_code(invoice),
+                "PecDestinatario": invoice.recipient_pec,
             },
             "CedentePrestatore": {
                 "DatiAnagrafici": {
                     "IdFiscaleIVA": {
                         "IdPaese": sender.country_code,
-                        "IdCodice": "01234567890",
+                        "IdCodice": sender.code,
                     },
                     "Anagrafica": {"Denominazione": sender.company_name},
                     "RegimeFiscale": sender.tax_regime,
@@ -61,6 +69,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 "DatiAnagrafici": {
                     "CodiceFiscale": invoice.recipient_tax_code,
                     "Anagrafica": {
+                        "Denominazione": invoice.recipient_denomination,
                         "Nome": invoice.recipient_first_name,
                         "Cognome": invoice.recipient_last_name,
                     },
@@ -108,7 +117,9 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                 "DatiRiepilogo": {
                     "AliquotaIVA": format_price(invoice.invoice_tax_rate),
                     "ImponibileImporto": format_price(invoice.invoice_amount),
-                    "Imposta": format_price(invoice.invoice_tax_amount),
+                    "Imposta": format_price(
+                        invoice.invoice_tax_rate * invoice.invoice_amount / 100
+                    ),
                 },
             },
             "DatiPagamento": {

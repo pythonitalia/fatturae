@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,6 +17,7 @@ from .constants import (
     RETENTION_TYPES,
     RETENTION_CAUSALS,
 )
+from .managers import SenderManager
 from .xml import invoice_to_xml
 
 
@@ -63,6 +65,12 @@ class Sender(TimeStampedModel):
         Address, models.PROTECT, verbose_name=_("Address")
     )
 
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT
+    )
+
+    objects = SenderManager()
+
     def __str__(self):
         return f"{self.name}"
 
@@ -91,7 +99,7 @@ class Invoice(TimeStampedModel):
     sender = models.ForeignKey(
         Sender, verbose_name=_("Sender"), on_delete=models.PROTECT
     )
-    invoice_number = models.CharField(_("Invoice number"), max_length=8)
+    invoice_number = models.CharField(_("Invoice number"), max_length=20)
     invoice_type = models.CharField(
         _("Invoice type"), choices=INVOICE_TYPES, max_length=4
     )
@@ -127,6 +135,9 @@ class Invoice(TimeStampedModel):
     recipient_tax_code = models.CharField(
         _("Tax code"), blank=True, max_length=16
     )
+    recipient_denomination = models.CharField(
+        _("Recipient denomination"), blank=True, max_length=80
+    )
     recipient_first_name = models.CharField(
         _("Recipient first name"), blank=True, max_length=60
     )
@@ -159,7 +170,9 @@ class Invoice(TimeStampedModel):
         return invoice_to_xml(self)
 
     def get_filename(self):
-        return f"{self.recipient_address.country_code}{self.recipient_code}_{self.invoice_number}.xml"
+        return (
+            f"{self.recipient_address.country_code}{self.recipient_code}_1.xml"
+        )
 
     def __str__(self):
         return (
