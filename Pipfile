@@ -16,6 +16,7 @@ coreapi = "*"
 pyyaml = "*"
 gunicorn = "*"
 mypy-extensions = "*"
+whitenoise = "*"
 
 [dev-packages]
 pytest = "*"
