@@ -19,7 +19,7 @@ SECRET_KEY = "t2r(bf!0(*4hq+2a4qg_=)l0zphz(da_+i=8dr@^_q&1pp(ut@"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS: List[str] = []
+ALLOWED_HOSTS: List[str] = ["pycon-fatture.herokuapp.com"]
 
 
 # Application definition
