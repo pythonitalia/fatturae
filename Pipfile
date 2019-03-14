@@ -15,6 +15,7 @@ djangorestframework = "*"
 coreapi = "*"
 pyyaml = "*"
 gunicorn = "*"
+mypy-extensions = "*"
 
 [dev-packages]
 pytest = "*"
