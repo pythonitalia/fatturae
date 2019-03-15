@@ -53,7 +53,7 @@ class Sender(TimeStampedModel):
     contact_email = models.CharField(_("Contact Email"), max_length=200)
 
     fiscal_code = models.CharField(_("Fiscal Code"), max_length=16)
-    code = models.CharField(_("Sender VAT Number"), max_length=7)
+    code = models.CharField(_("Sender VAT Number"), max_length=13)
 
     company_name = models.CharField(_("Company Name"), max_length=80)
 
