@@ -71,7 +71,8 @@ def test_xml_header_generation(sample_invoice):
 
     c_data = header.xpath("CessionarioCommittente/DatiAnagrafici")[0]
 
-    assert c_data.xpath("CodiceFiscale")[0].text == "AAABBB12B34Z123D"
+    assert c_data.xpath("IdFiscaleIVA/IdPaese")[0].text == "IT"
+    assert c_data.xpath("IdFiscaleIVA/IdCodice")[0].text == "AAABBB12B34Z123D"
     assert c_data.xpath("Anagrafica/Nome")[0].text == "Patrick"
     assert c_data.xpath("Anagrafica/Cognome")[0].text == "A"
 

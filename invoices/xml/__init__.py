@@ -67,7 +67,11 @@ def _generate_header(invoice: Invoice) -> XMLDict:
             },
             "CessionarioCommittente": {
                 "DatiAnagrafici": {
-                    "CodiceFiscale": invoice.recipient_tax_code,
+                    # TODO: add fiscal code if no recipient_tax_code
+                    "IdFiscaleIVA": {
+                        "IdPaese": sender.country_code,
+                        "IdCodice": invoice.recipient_tax_code,
+                    },
                     "Anagrafica": {
                         "Denominazione": invoice.recipient_denomination,
                         "Nome": invoice.recipient_first_name,
