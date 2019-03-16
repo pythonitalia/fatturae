@@ -126,9 +126,6 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                 "CondizioniPagamento": invoice.payment_condition,
                 "DettaglioPagamento": {
                     "ModalitaPagamento": invoice.payment_method,
-                    "DataScadenzaPagamento": invoice.invoice_deadline.strftime(
-                        "%Y-%m-%d"
-                    ),
                     "ImportoPagamento": format_price(invoice.invoice_amount),
                 },
             },
