@@ -53,11 +53,19 @@ class InvoiceSerializer(serializers.ModelSerializer):
         )
 
         validated_data["recipient_address"] = recipient_address
-        validated_data["sender"] = sender
 
         items = validated_data.pop("items", [])
 
-        invoice = Invoice.objects.create(**validated_data)
+        invoice_number = validated_data.pop("invoice_number")
+
+        invoice, created = Invoice.objects.update_or_create(
+            sender=sender,
+            invoice_number=invoice_number,
+            defaults=validated_data,
+        )
+
+        if not created:
+            invoice.items.all().delete()
 
         for index, item in enumerate(items):
             Item.objects.create(row=index + 1, invoice=invoice, **item)
