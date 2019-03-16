@@ -42,6 +42,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "recipient_code",
             "recipient_pec",
             "recipient_address",
+            "payment_condition",
         ]
 
     # TODO: atomic

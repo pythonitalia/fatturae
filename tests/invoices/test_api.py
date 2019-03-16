@@ -49,6 +49,7 @@ def test_creates_with_users_sender(api_client, user, sender):
                 }
             ],
             "recipient_denomination": "Example srl",
+            "payment_condition": "TP02",
         },
         format="json",
     )
@@ -97,6 +98,7 @@ def test_test_wants_both_first_and_last_name(api_client, user, sender):
             "invoice_amount": 30,
             "recipient_code": "XXXXXXX",
             "recipient_first_name": "Patrick",
+            "payment_condition": "TP02",
         },
         format="json",
     )
@@ -141,6 +143,7 @@ def test_test_wants_both_first_and_last_name(api_client, user, sender):
             "recipient_code": "XXXXXXX",
             "recipient_first_name": "Patrick",
             "recipient_last_name": "Arminio",
+            "payment_condition": "TP02",
         },
         format="json",
     )
@@ -177,6 +180,7 @@ def test_needs_pec_or_recipient_code(api_client, user, sender):
         "invoice_amount": 30,
         "recipient_first_name": "Patrick",
         "recipient_last_name": "Patrick",
+        "payment_condition": "TP02",
     }
 
     response = api_client.post(reverse("invoice-list"), data, format="json")
@@ -224,6 +228,7 @@ def test_works_with_either_pec_or_recipient_code(
         "invoice_amount": 30,
         "recipient_first_name": "Patrick",
         "recipient_last_name": "Patrick",
+        "payment_condition": "TP02",
     }
 
     if code:
@@ -271,6 +276,7 @@ def test_updates_invoice_when_re_uploading(api_client, user, sender):
             }
         ],
         "recipient_denomination": "Example srl",
+        "payment_condition": "TP02",
     }
 
     response = api_client.post(reverse("invoice-list"), data, format="json")
