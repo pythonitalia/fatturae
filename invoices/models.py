@@ -144,7 +144,9 @@ class Invoice(TimeStampedModel):
     recipient_last_name = models.CharField(
         _("Recipient last name"), blank=True, max_length=60
     )
-    recipient_code = models.CharField(_("Recipient code"), max_length=7)
+    recipient_code = models.CharField(
+        _("Recipient code"), blank=True, max_length=7
+    )
     recipient_pec = models.EmailField(_("Recipient PEC"), blank=True)
     recipient_address = models.ForeignKey(
         Address, models.PROTECT, verbose_name=_("Recipient Address")
