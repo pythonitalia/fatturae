@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from invoices.models import Invoice, Address
+from invoices.models import Address, Invoice
 from lxml import etree
 
 
@@ -201,3 +201,24 @@ def test_invoice_string(sample_invoice):
 @pytest.mark.django_db
 def test_sender_string(sender):
     assert str(sender) == "Python Italia APS"
+
+
+@pytest.mark.django_db
+def test_xml_encoding(sample_invoice):
+    sample_invoice.recipient_first_name = "Łukasz"
+    sample_invoice.save()
+
+    xml = sample_invoice.to_xml()
+
+    header = xml.xpath(
+        "/p:FatturaElettronica/FatturaElettronicaHeader",
+        namespaces={
+            "p": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"
+        },
+    )[0]
+
+    name = header.xpath(
+        "CessionarioCommittente/DatiAnagrafici/Anagrafica/Nome"
+    )[0]
+
+    assert name.text == "Lukasz"

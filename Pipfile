@@ -17,6 +17,7 @@ pyyaml = "*"
 gunicorn = "*"
 mypy-extensions = "*"
 whitenoise = "*"
+unidecode = "*"
 
 [dev-packages]
 pytest = "*"

@@ -1,12 +1,13 @@
 from decimal import Decimal
 from typing import Dict, List
 
+import unidecode
 from lxml import etree
 
 from .types import XMLDict
 
 
-def _split_tags(tag_name: str, text: str) -> List[etree._Element]:
+def _split_tags(tag_name: str, text: bytes) -> List[etree._Element]:
     tags: List[etree._Element] = []
 
     size = 200
@@ -44,6 +45,8 @@ def dict_to_xml(dict: XMLDict):
         else:
             if isinstance(value, (int, float, Decimal)):
                 value = str(value)
+
+            value = unidecode.unidecode(value).encode("latin_1")
 
             for tag in _split_tags(key, value):
                 tags.append(tag)
