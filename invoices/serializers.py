@@ -18,8 +18,8 @@ class ItemSerializer(serializers.ModelSerializer):
 class InvoiceSerializer(serializers.ModelSerializer):
     recipient_address = AddressSerializer()
     items = ItemSerializer(many=True)
-    recipient_code = serializers.CharField(required=False)
-    recipient_pec = serializers.EmailField(required=False)
+    recipient_code = serializers.CharField(required=False, allow_blank=True)
+    recipient_pec = serializers.EmailField(required=False, allow_blank=True)
 
     class Meta:
         model = Invoice
