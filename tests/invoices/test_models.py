@@ -142,20 +142,20 @@ def test_xml_body_generation(sample_invoice):
     assert first_item.xpath("NumeroLinea")[0].text == "1"
     assert first_item.xpath("Descrizione")[0].text == "item 1"
     assert first_item.xpath("Quantita")[0].text == "1.00"
-    assert first_item.xpath("PrezzoUnitario")[0].text == "1.00"
-    assert first_item.xpath("PrezzoTotale")[0].text == "1.00"
+    assert first_item.xpath("PrezzoUnitario")[0].text == "0.82"
+    assert first_item.xpath("PrezzoTotale")[0].text == "0.82"
     assert first_item.xpath("AliquotaIVA")[0].text == "0.00"
 
     assert second_item.xpath("NumeroLinea")[0].text == "2"
     assert second_item.xpath("Descrizione")[0].text == "item 2"
     assert second_item.xpath("Quantita")[0].text == "2.00"
-    assert second_item.xpath("PrezzoUnitario")[0].text == "2.00"
-    assert second_item.xpath("PrezzoTotale")[0].text == "4.00"
+    assert second_item.xpath("PrezzoUnitario")[0].text == "1.64"
+    assert second_item.xpath("PrezzoTotale")[0].text == "3.28"
     assert second_item.xpath("AliquotaIVA")[0].text == "0.00"
 
     assert summary.xpath("DatiRiepilogo/AliquotaIVA")[0].text == "22.00"
-    assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.00"
-    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "0.44"
+    assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "1.64"
+    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "0.36"
 
     # Payment data
 

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+import decimal
+from typing import TYPE_CHECKING, Dict, List, Union
 
 from lxml import etree
 
 from .types import ProductSummary, XMLDict
 from .utils import dict_to_xml, format_price
+
 
 if TYPE_CHECKING:
     from invoices.models import Invoice, Sender, Address
@@ -22,6 +24,23 @@ SCHEMA_LOCATION = (
     "http://www.fatturapa.gov.it/export/fatturazione/sdi/fatturapa/v1.2"
     "/Schema_del_file_xml_FatturaPA_versione_1.2.xsd"
 )
+
+
+def _get_price_minus_tax(
+    price: Union[float, decimal.Decimal], invoice: Invoice
+) -> float:
+    return decimal.Decimal(price) / (1 + invoice.invoice_tax_rate / 100)
+
+
+def get_invoice_summary(invoice: Invoice) -> Dict[str, str]:
+    taxable_amount = _get_price_minus_tax(invoice.invoice_amount, invoice)
+    tax = invoice.invoice_amount - taxable_amount
+
+    return {
+        "AliquotaIVA": format_price(invoice.invoice_tax_rate),
+        "ImponibileImporto": format_price(taxable_amount),
+        "Imposta": format_price(tax),
+    }
 
 
 def _get_recipient_code(invoice: Invoice) -> str:
@@ -112,19 +131,17 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                         "NumeroLinea": x["row"],
                         "Descrizione": x["description"],
                         "Quantita": format_price(x["quantity"]),
-                        "PrezzoUnitario": format_price(x["unit_price"]),
-                        "PrezzoTotale": format_price(x["total_price"]),
+                        "PrezzoUnitario": format_price(
+                            _get_price_minus_tax(x["unit_price"], invoice)
+                        ),
+                        "PrezzoTotale": format_price(
+                            _get_price_minus_tax(x["total_price"], invoice)
+                        ),
                         "AliquotaIVA": format_price(x["vat_rate"]),
                     }
                     for x in summary
                 ],
-                "DatiRiepilogo": {
-                    "AliquotaIVA": format_price(invoice.invoice_tax_rate),
-                    "ImponibileImporto": format_price(invoice.invoice_amount),
-                    "Imposta": format_price(
-                        invoice.invoice_tax_rate * invoice.invoice_amount / 100
-                    ),
-                },
+                "DatiRiepilogo": get_invoice_summary(invoice),
             },
             "DatiPagamento": {
                 "CondizioniPagamento": invoice.payment_condition,
