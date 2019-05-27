@@ -40,6 +40,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "recipient_first_name",
             "recipient_last_name",
             "recipient_code",
+            "recipient_fiscal_code",
             "recipient_pec",
             "recipient_address",
             "payment_condition",
